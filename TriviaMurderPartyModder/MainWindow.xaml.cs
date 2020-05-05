@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using TriviaMurderPartyModder.Data;
 
@@ -12,7 +14,23 @@ namespace TriviaMurderPartyModder {
     public partial class MainWindow : Window {
         readonly Questions questionList = new Questions();
 
+        bool unsavedChanges = false;
         string questionFile = null;
+
+        bool UnsavedChangesPrompt() {
+            if (unsavedChanges)
+                return MessageBox.Show("You have unsaved changes. Do you want to discard them?", "Unsaved changes",
+                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+            return true;
+        }
+
+        public MainWindow() {
+            InitializeComponent();
+            questions.ItemsSource = questionList;
+            questions.CellEditEnding += Questions_CellEditEnding;
+        }
+
+        private void Questions_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => unsavedChanges = true;
 
         void MoveRight(object sender, KeyEventArgs e) {
             if (e.Key == Key.Enter && e.OriginalSource is UIElement source) {
@@ -21,19 +39,19 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        public MainWindow() {
-            InitializeComponent();
-            questions.ItemsSource = questionList;
-        }
+        void Window_Closing(object sender, CancelEventArgs e) => e.Cancel = !UnsavedChangesPrompt();
 
         string MakeTextCompatible(string source) => source.Replace('ő', 'ö').Replace('ű', 'ü').Replace("\"", "\\\"");
 
         void Import(bool clear) {
-            OpenFileDialog opener = new OpenFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
-            if (opener.ShowDialog() == true) {
-                if (clear)
-                    questionList.Clear();
-                questionList.Add(questionFile = opener.FileName);
+            if (!clear || UnsavedChangesPrompt()) {
+                OpenFileDialog opener = new OpenFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
+                if (opener.ShowDialog() == true) {
+                    if (clear)
+                        questionList.Clear();
+                    questionList.Add(questionFile = opener.FileName);
+                }
+                unsavedChanges = !clear;
             }
         }
 
@@ -78,6 +96,7 @@ namespace TriviaMurderPartyModder {
                         output.Append("}]}]}");
                 }
                 File.WriteAllText(questionFile = saver.FileName, output.ToString());
+                unsavedChanges = false;
             }
         }
 
@@ -101,6 +120,7 @@ namespace TriviaMurderPartyModder {
                 return;
             }
             questionList.Remove((Question)questions.SelectedItem);
+            unsavedChanges = true;
         }
     }
 }
