@@ -1,0 +1,36 @@
+﻿<Window x:Class="TriviaMurderPartyModder.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TriviaMurderPartyModder"
+        mc:Ignorable="d"
+        Title="Trivia Murder Party modder" Height="450" Width="800">
+    <Grid>
+        <TabControl x:Name="tabControl">
+            <TabItem Header="Question">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid x:Name="questions" IsManipulationEnabled="True" PreviewKeyDown="MoveRight">
+                    </DataGrid>
+                    <GroupBox Grid.Column="1" Header="Data" Height="110" Margin="10,10,10,0" VerticalAlignment="Top">
+                        <Grid>
+                            <Button x:Name="questionImport" Content="Import" Margin="10,10,10,0" VerticalAlignment="Top" Click="QuestionImport"/>
+                            <Button x:Name="questionMerge" Content="Merge" Margin="10,35,10,0" VerticalAlignment="Top" Click="QuestionMerge"/>
+                            <Button x:Name="questionExport" Content="Export" Margin="10,60,10,0" VerticalAlignment="Top" Click="QuestionExport"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="Question" Height="61" Margin="10,125,10,0" VerticalAlignment="Top">
+                        <Button x:Name="questionImportAudio" Content="Import audio" Margin="11,10,9,0" VerticalAlignment="Top" Click="QuestionImportAudio"/>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Final Round">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
