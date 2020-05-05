@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace TriviaMurderPartyModder.Data {
     public class Question {
@@ -49,6 +50,17 @@ namespace TriviaMurderPartyModder.Data {
                         break;
                 }
             }
+        }
+
+        public void ImportAudio(string questionFile, string audioFile) {
+            string folder = Path.Combine(Path.GetDirectoryName(questionFile), "TDQuestion", ID.ToString());
+            Directory.CreateDirectory(folder);
+            File.WriteAllText(Path.Combine(folder, "data.jet"),
+                "{\"fields\":[{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasIntro\"},{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasPic\"}," +
+                "{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasVamp\"},{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasChoices\"}," +
+                "{\"t\":\"A\",\"v\":\"aud\",\"n\":\"Q\"},{\"t\":\"A\",\"n\":\"Intro\"},{\"t\":\"A\",\"n\":\"Choices\"}," +
+                "{\"t\":\"A\",\"n\":\"Vamp\"},{\"t\":\"G\",\"n\":\"Pic\"}]}");
+            File.Copy(audioFile, Path.Combine(folder, "aud.ogg"));
         }
     }
 }
