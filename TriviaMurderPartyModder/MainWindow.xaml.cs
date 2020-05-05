@@ -140,5 +140,13 @@ namespace TriviaMurderPartyModder {
                 File.Copy(opener.FileName, Path.Combine(folder, "aud.ogg"));
             }
         }
+
+        void QuestionRemove(object sender, RoutedEventArgs e) {
+            if (questions.SelectedItem == null) {
+                QuestionIssue("Select the question to remove.");
+                return;
+            }
+            questionList.Remove((Question)questions.SelectedItem);
+        }
     }
 }

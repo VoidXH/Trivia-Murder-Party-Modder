@@ -23,8 +23,11 @@
                             <Button x:Name="questionExport" Content="Export" Margin="10,60,10,0" VerticalAlignment="Top" Click="QuestionExport"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Question" Height="61" Margin="10,125,10,0" VerticalAlignment="Top">
-                        <Button x:Name="questionImportAudio" Content="Import audio" Margin="11,10,9,0" VerticalAlignment="Top" Click="QuestionImportAudio"/>
+                    <GroupBox Grid.Column="1" Header="Selected question" Height="85" Margin="10,125,10,0" VerticalAlignment="Top">
+                        <Grid>
+                            <Button Content="Import audio" Margin="11,10,10,0" VerticalAlignment="Top" Click="QuestionImportAudio"/>
+                            <Button Content="Remove" Margin="11,35,10,0" VerticalAlignment="Top" Click="QuestionRemove"/>
+                        </Grid>
                     </GroupBox>
                 </Grid>
             </TabItem>
