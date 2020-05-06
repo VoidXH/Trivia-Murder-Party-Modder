@@ -100,18 +100,31 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        void QuestionImportAudio(object sender, RoutedEventArgs e) {
+        string LoadAudio() {
             if (questions.SelectedItem == null) {
                 QuestionIssue("Select the question to import the audio of.");
-                return;
+                return null;
             }
             if (questionFile == null) {
                 QuestionIssue("The question file has to exist first. Export your work or import an existing question file.");
-                return;
+                return null;
             }
             OpenFileDialog opener = new OpenFileDialog { Filter = "Ogg Vorbis Audio (*.ogg)|*.ogg" };
             if (opener.ShowDialog() == true)
-                ((Question)questions.SelectedItem).ImportAudio(questionFile, opener.FileName);
+                return opener.FileName;
+            return null;
+        }
+
+        void QuestionAudio(object sender, RoutedEventArgs e) {
+            string file = LoadAudio();
+            if (file != null)
+                ((Question)questions.SelectedItem).ImportQuestionAudio(questionFile, file);
+        }
+
+        void QuestionIntroAudio(object sender, RoutedEventArgs e) {
+            string file = LoadAudio();
+            if (file != null)
+                ((Question)questions.SelectedItem).ImportIntroAudio(questionFile, file);
         }
 
         void QuestionRemove(object sender, RoutedEventArgs e) {
