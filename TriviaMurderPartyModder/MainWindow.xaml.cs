@@ -1,7 +1,5 @@
 ﻿using Microsoft.Win32;
 using System.ComponentModel;
-using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -41,8 +39,6 @@ namespace TriviaMurderPartyModder {
 
         void Window_Closing(object sender, CancelEventArgs e) => e.Cancel = !UnsavedChangesPrompt();
 
-        string MakeTextCompatible(string source) => source.Replace('ő', 'ö').Replace('ű', 'ü').Replace("\"", "\\\"");
-
         void Import(bool clear) {
             if (!clear || UnsavedChangesPrompt()) {
                 OpenFileDialog opener = new OpenFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
@@ -59,64 +55,44 @@ namespace TriviaMurderPartyModder {
 
         void QuestionMerge(object sender, RoutedEventArgs e) => Import(false);
 
-        void SaveAs(string name) {
-            StringBuilder output = new StringBuilder("{\"episodeid\":1244,\"content\":[");
-            for (int i = 0, end = questionList.Count; i < end; ++i) {
-                Question q = questionList[i];
-                output.Append("{\"x\":false,\"id\":").Append(q.ID);
-                if (q.Text == null) {
-                    QuestionIssue(string.Format("No text given for question ID {0}.", q.ID));
-                    return;
-                }
-                output.Append(",\"text\":\"").Append(MakeTextCompatible(q.Text)).Append("\",\"pic\": false,\"choices\":[");
-                if (q.Correct < 1 || q.Correct > 4) {
-                    QuestionIssue(string.Format("No correct answer set for question \"{0}\".", q.Text));
-                    return;
-                }
-                for (int answer = 1; answer <= 4; ++answer) {
-                    if (answer != 1)
-                        output.Append("},{");
-                    else
-                        output.Append("{");
-                    if (answer == q.Correct)
-                        output.Append("\"correct\":true,");
-                    if (q[answer] == null) {
-                        QuestionIssue(string.Format("No answer {0} for question \"{1}\".", answer, q.Text));
-                        return;
-                    }
-                    output.Append("\"text\":\"").Append(MakeTextCompatible(q[answer])).Append("\"");
-                }
-                if (i != end - 1)
-                    output.Append("}]},");
-                else
-                    output.Append("}]}]}");
-            }
-            File.WriteAllText(questionFile = name, output.ToString());
-            unsavedChanges = false;
-        }
-
         void QuestionSave(object sender, RoutedEventArgs e) {
             if (questionFile == null)
                 QuestionSaveAs(sender, e);
-            else
-                SaveAs(questionFile);
+            else if (questionList.SaveAs(questionFile))
+                unsavedChanges = false;
         }
-
-        void QuestionIssue(string text) => MessageBox.Show(text, "Question issue", MessageBoxButton.OK, MessageBoxImage.Error);
 
         void QuestionSaveAs(object sender, RoutedEventArgs e) {
             SaveFileDialog saver = new SaveFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
-            if (saver.ShowDialog() == true)
-                SaveAs(saver.FileName);
+            if (saver.ShowDialog() == true && questionList.SaveAs(saver.FileName)) {
+                questionFile = saver.FileName;
+                unsavedChanges = false;
+            }
+        }
+
+        void ReleaseCheck(object sender, RoutedEventArgs e) {
+            for (int i = 0, end = questionList.Count; i < end; ++i) {
+                for (int j = i + 1; j < end; ++j) {
+                    if (questionList[i].ID == questionList[j].ID) {
+                        Questions.QuestionIssue(string.Format("There are multiple {0} IDs.", questionList[i].ID));
+                        return;
+                    }
+                }
+                if (questionFile != null && !questionList[i].CheckAudio(questionFile)) {
+                    Questions.QuestionIssue(string.Format("Audio files are missing for question ID {0}.", questionList[i].ID));
+                    return;
+                }
+            }
+            MessageBox.Show("Release check successful. This question set is compatible with the game.", "Release check result");
         }
 
         string LoadAudio() {
             if (questions.SelectedItem == null) {
-                QuestionIssue("Select the question to import the audio of.");
+                Questions.QuestionIssue("Select the question to import the audio of.");
                 return null;
             }
             if (questionFile == null) {
-                QuestionIssue("The question file has to exist first. Export your work or import an existing question file.");
+                Questions.QuestionIssue("The question file has to exist first. Export your work or import an existing question file.");
                 return null;
             }
             OpenFileDialog opener = new OpenFileDialog { Filter = "Ogg Vorbis Audio (*.ogg)|*.ogg" };
@@ -139,7 +115,7 @@ namespace TriviaMurderPartyModder {
 
         void QuestionRemove(object sender, RoutedEventArgs e) {
             if (questions.SelectedItem == null) {
-                QuestionIssue("Select the question to remove.");
+                Questions.QuestionIssue("Select the question to remove.");
                 return;
             }
             questionList.Remove((Question)questions.SelectedItem);

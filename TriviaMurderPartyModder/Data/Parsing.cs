@@ -6,5 +6,7 @@
             while (!(source[to] == '\"' && source[to - 1] != '\\')) ++to;
             return source.Substring(from, to - from).Replace("\\\"", "\"");
         }
+
+        public static string MakeTextCompatible(string source) => source.Replace('ő', 'ö').Replace('ű', 'ü').Replace("\"", "\\\"");
     }
 }

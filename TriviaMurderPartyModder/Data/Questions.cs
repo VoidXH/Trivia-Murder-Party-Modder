@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.Text;
+using System.Windows;
 
 namespace TriviaMurderPartyModder.Data {
     public class Questions : ObservableCollection<Question> {
@@ -28,6 +30,44 @@ namespace TriviaMurderPartyModder.Data {
                 }
                 Add(imported);
             }
+        }
+
+        public static void QuestionIssue(string text) => MessageBox.Show(text, "Question issue", MessageBoxButton.OK, MessageBoxImage.Error);
+
+        public bool SaveAs(string name) {
+            StringBuilder output = new StringBuilder("{\"episodeid\":1244,\"content\":[");
+            for (int i = 0, end = Count; i < end; ++i) {
+                Question q = this[i];
+                output.Append("{\"x\":false,\"id\":").Append(q.ID);
+                if (q.Text == null) {
+                    QuestionIssue(string.Format("No text given for question ID {0}.", q.ID));
+                    return false;
+                }
+                output.Append(",\"text\":\"").Append(Parsing.MakeTextCompatible(q.Text)).Append("\",\"pic\": false,\"choices\":[");
+                if (q.Correct < 1 || q.Correct > 4) {
+                    QuestionIssue(string.Format("No correct answer set for question \"{0}\".", q.Text));
+                    return false;
+                }
+                for (int answer = 1; answer <= 4; ++answer) {
+                    if (answer != 1)
+                        output.Append("},{");
+                    else
+                        output.Append("{");
+                    if (answer == q.Correct)
+                        output.Append("\"correct\":true,");
+                    if (q[answer] == null) {
+                        QuestionIssue(string.Format("No answer {0} for question \"{1}\".", answer, q.Text));
+                        return false;
+                    }
+                    output.Append("\"text\":\"").Append(Parsing.MakeTextCompatible(q[answer])).Append("\"");
+                }
+                if (i != end - 1)
+                    output.Append("}]},");
+                else
+                    output.Append("}]}]}");
+            }
+            File.WriteAllText(name, output.ToString());
+            return true;
         }
     }
 }
