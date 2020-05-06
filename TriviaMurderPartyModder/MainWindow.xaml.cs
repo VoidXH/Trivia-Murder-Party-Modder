@@ -59,45 +59,55 @@ namespace TriviaMurderPartyModder {
 
         void QuestionMerge(object sender, RoutedEventArgs e) => Import(false);
 
+        void SaveAs(string name) {
+            StringBuilder output = new StringBuilder("{\"episodeid\":1244,\"content\":[");
+            for (int i = 0, end = questionList.Count; i < end; ++i) {
+                Question q = questionList[i];
+                output.Append("{\"x\":false,\"id\":").Append(q.ID);
+                if (q.Text == null) {
+                    QuestionIssue(string.Format("No text given for question ID {0}.", q.ID));
+                    return;
+                }
+                output.Append(",\"text\":\"").Append(MakeTextCompatible(q.Text)).Append("\",\"pic\": false,\"choices\":[");
+                if (q.Correct < 1 || q.Correct > 4) {
+                    QuestionIssue(string.Format("No correct answer set for question \"{0}\".", q.Text));
+                    return;
+                }
+                for (int answer = 1; answer <= 4; ++answer) {
+                    if (answer != 1)
+                        output.Append("},{");
+                    else
+                        output.Append("{");
+                    if (answer == q.Correct)
+                        output.Append("\"correct\":true,");
+                    if (q[answer] == null) {
+                        QuestionIssue(string.Format("No answer {0} for question \"{1}\".", answer, q.Text));
+                        return;
+                    }
+                    output.Append("\"text\":\"").Append(MakeTextCompatible(q[answer])).Append("\"");
+                }
+                if (i != end - 1)
+                    output.Append("}]},");
+                else
+                    output.Append("}]}]}");
+            }
+            File.WriteAllText(questionFile = name, output.ToString());
+            unsavedChanges = false;
+        }
+
+        void QuestionSave(object sender, RoutedEventArgs e) {
+            if (questionFile == null)
+                QuestionSaveAs(sender, e);
+            else
+                SaveAs(questionFile);
+        }
+
         void QuestionIssue(string text) => MessageBox.Show(text, "Question issue", MessageBoxButton.OK, MessageBoxImage.Error);
 
-        void QuestionExport(object sender, RoutedEventArgs e) {
+        void QuestionSaveAs(object sender, RoutedEventArgs e) {
             SaveFileDialog saver = new SaveFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
-            if (saver.ShowDialog() == true) {
-                StringBuilder output = new StringBuilder("{\"episodeid\":1244,\"content\":[");
-                for (int i = 0, end = questionList.Count; i < end; ++i) {
-                    Question q = questionList[i];
-                    output.Append("{\"x\":false,\"id\":").Append(q.ID);
-                    if (q.Text == null) {
-                        QuestionIssue(string.Format("No text given for question ID {0}.", q.ID));
-                        return;
-                    }
-                    output.Append(",\"text\":\"").Append(MakeTextCompatible(q.Text)).Append("\",\"pic\": false,\"choices\":[");
-                    if (q.Correct < 1 || q.Correct > 4) {
-                        QuestionIssue(string.Format("No correct answer set for question \"{0}\".", q.Text));
-                        return;
-                    }
-                    for (int answer = 1; answer <= 4; ++answer) {
-                        if (answer != 1)
-                            output.Append("},{");
-                        else
-                            output.Append("{");
-                        if (answer == q.Correct)
-                            output.Append("\"correct\":true,");
-                        if (q[answer] == null) {
-                            QuestionIssue(string.Format("No answer {0} for question \"{1}\".", answer, q.Text));
-                            return;
-                        }
-                        output.Append("\"text\":\"").Append(MakeTextCompatible(q[answer])).Append("\"");
-                    }
-                    if (i != end - 1)
-                        output.Append("}]},");
-                    else
-                        output.Append("}]}]}");
-                }
-                File.WriteAllText(questionFile = saver.FileName, output.ToString());
-                unsavedChanges = false;
-            }
+            if (saver.ShowDialog() == true)
+                SaveAs(saver.FileName);
         }
 
         string LoadAudio() {
