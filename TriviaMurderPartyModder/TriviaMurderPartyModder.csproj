@@ -66,6 +66,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Data\FinalRounder.cs" />
+    <Compile Include="Data\FinalRounderChoice.cs" />
+    <Compile Include="Data\FinalRounders.cs" />
     <Compile Include="Data\Parsing.cs" />
     <Compile Include="Data\Question.cs" />
     <Compile Include="Data\Questions.cs" />

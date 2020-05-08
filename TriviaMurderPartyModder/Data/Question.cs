@@ -59,25 +59,6 @@ namespace TriviaMurderPartyModder.Data {
             return yes > no;
         }
 
-        public bool CheckAudio(string questionFile) {
-            string folder = Path.Combine(Path.GetDirectoryName(questionFile), "TDQuestion", ID.ToString());
-            string dataFile = Path.Combine(folder, "data.jet");
-            if (!File.Exists(dataFile))
-                return false;
-            string dataContents = File.ReadAllText(dataFile);
-            int pos = 0;
-            while ((pos = dataContents.IndexOf("\"v\"", pos) + 3) != 2) {
-                int valueStart = dataContents.IndexOf('"', pos) + 1;
-                pos = dataContents.IndexOf('"', valueStart);
-                string value = dataContents.Substring(valueStart, pos - valueStart);
-                if (value.Equals("true") || value.Equals("false"))
-                    continue;
-                if (!File.Exists(Path.Combine(folder, value + ".ogg")))
-                    return false;
-            }
-            return true;
-        }
-
         public void ImportIntroAudio(string questionFile, string audioFile) {
             string folder = Path.Combine(Path.GetDirectoryName(questionFile), "TDQuestion", ID.ToString());
             string dataFile = Path.Combine(folder, "data.jet");

@@ -12,7 +12,7 @@ namespace TriviaMurderPartyModder.Data {
                 int id = contents.IndexOf("\"id\"", position) + 4;
                 int text = contents.IndexOf("\"text\"", position) + 6;
                 int choices = contents.IndexOf("\"choices\"", position) + 9;
-                if (id == -1 || text == -1 || choices == -1)
+                if (id == 3 || text == 5 || choices == 8)
                     continue;
                 id = contents.IndexOf(':', id) + 1;
                 Question imported = new Question {
@@ -39,7 +39,7 @@ namespace TriviaMurderPartyModder.Data {
             for (int i = 0, end = Count; i < end; ++i) {
                 Question q = this[i];
                 output.Append("{\"x\":false,\"id\":").Append(q.ID);
-                if (q.Text == null) {
+                if (string.IsNullOrWhiteSpace(q.Text)) {
                     QuestionIssue(string.Format("No text given for question ID {0}.", q.ID));
                     return false;
                 }
@@ -55,7 +55,7 @@ namespace TriviaMurderPartyModder.Data {
                         output.Append("{");
                     if (answer == q.Correct)
                         output.Append("\"correct\":true,");
-                    if (q[answer] == null) {
+                    if (string.IsNullOrWhiteSpace(q[answer])) {
                         QuestionIssue(string.Format("No answer {0} for question \"{1}\".", answer, q.Text));
                         return false;
                     }

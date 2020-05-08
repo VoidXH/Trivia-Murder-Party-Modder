@@ -1,8 +1,11 @@
 ﻿using Microsoft.Win32;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+
 using TriviaMurderPartyModder.Data;
 
 namespace TriviaMurderPartyModder {
@@ -10,25 +13,36 @@ namespace TriviaMurderPartyModder {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        readonly OpenFileDialog opener = new OpenFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
+        readonly SaveFileDialog saver = new SaveFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
+
         readonly Questions questionList = new Questions();
+        readonly FinalRounders finalRoundList = new FinalRounders();
 
-        bool unsavedChanges = false;
-        string questionFile = null;
+        bool unsavedQuestion, unsavedTopic;
+        FinalRounder selectedTopic;
+        FinalRounderChoice selectedChoice;
+        string questionFile;
+        string finalRoundFile;
 
-        bool UnsavedChangesPrompt() {
-            if (unsavedChanges)
-                return MessageBox.Show("You have unsaved changes. Do you want to discard them?", "Unsaved changes",
+        bool UnsavedPrompt(bool hasUnsaved, string items) {
+            if (hasUnsaved)
+                return MessageBox.Show(string.Format("You have unsaved {0}. Do you want to discard them?", items), "Unsaved " + items,
                     MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
             return true;
         }
 
+        bool UnsavedQuestionPrompt() => UnsavedPrompt(unsavedQuestion, "questions");
+        bool UnsavedTopicPrompt() => UnsavedPrompt(unsavedTopic, "final round topics");
+
         public MainWindow() {
             InitializeComponent();
             questions.ItemsSource = questionList;
+            finalRounders.ItemsSource = finalRoundList;
             questions.CellEditEnding += Questions_CellEditEnding;
         }
 
-        private void Questions_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => unsavedChanges = true;
+        private void Questions_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => unsavedQuestion = true;
 
         void MoveRight(object sender, KeyEventArgs e) {
             if (e.Key == Key.Enter && e.OriginalSource is UIElement source) {
@@ -37,40 +51,41 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        void Window_Closing(object sender, CancelEventArgs e) => e.Cancel = !UnsavedChangesPrompt();
+        void Window_Closing(object sender, CancelEventArgs e) => e.Cancel = !UnsavedQuestionPrompt() && !UnsavedTopicPrompt();
 
-        void Import(bool clear) {
-            if (!clear || UnsavedChangesPrompt()) {
-                OpenFileDialog opener = new OpenFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
+        void QuestionImport(bool clear) {
+            if (!clear || UnsavedQuestionPrompt()) {
                 if (opener.ShowDialog() == true) {
                     if (clear)
                         questionList.Clear();
                     questionList.Add(questionFile = opener.FileName);
                 }
-                unsavedChanges = !clear;
+                unsavedQuestion = !clear;
             }
         }
 
-        void QuestionImport(object sender, RoutedEventArgs e) => Import(true);
+        void QuestionImport(object sender, RoutedEventArgs e) => QuestionImport(true);
 
-        void QuestionMerge(object sender, RoutedEventArgs e) => Import(false);
+        void QuestionMerge(object sender, RoutedEventArgs e) => QuestionImport(false);
 
         void QuestionSave(object sender, RoutedEventArgs e) {
             if (questionFile == null)
                 QuestionSaveAs(sender, e);
             else if (questionList.SaveAs(questionFile))
-                unsavedChanges = false;
+                unsavedQuestion = false;
         }
 
         void QuestionSaveAs(object sender, RoutedEventArgs e) {
-            SaveFileDialog saver = new SaveFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
             if (saver.ShowDialog() == true && questionList.SaveAs(saver.FileName)) {
                 questionFile = saver.FileName;
-                unsavedChanges = false;
+                unsavedQuestion = false;
             }
         }
 
         void ReleaseCheck(object sender, RoutedEventArgs e) {
+            string questionFileDir = null;
+            if (questionFile != null)
+                questionFileDir = Path.Combine(Path.GetDirectoryName(questionFile), "TDQuestion");
             for (int i = 0, end = questionList.Count; i < end; ++i) {
                 for (int j = i + 1; j < end; ++j) {
                     if (questionList[i].ID == questionList[j].ID) {
@@ -78,7 +93,7 @@ namespace TriviaMurderPartyModder {
                         return;
                     }
                 }
-                if (questionFile != null && !questionList[i].CheckAudio(questionFile)) {
+                if (questionFile != null && !Parsing.CheckAudio(questionFileDir, questionList[i].ID)) {
                     Questions.QuestionIssue(string.Format("Audio files are missing for question ID {0}.", questionList[i].ID));
                     return;
                 }
@@ -119,7 +134,136 @@ namespace TriviaMurderPartyModder {
                 return;
             }
             questionList.Remove((Question)questions.SelectedItem);
-            unsavedChanges = true;
+            unsavedQuestion = true;
+        }
+
+        void FinalRoundImport(bool clear) {
+            if (!clear || UnsavedTopicPrompt()) {
+                if (opener.ShowDialog() == true) {
+                    if (clear)
+                        finalRoundList.Clear();
+                    finalRoundList.Add(finalRoundFile = opener.FileName);
+                }
+                unsavedTopic = !clear;
+            }
+        }
+
+        void SelectFinalQuestion(FinalRounder question) {
+            selectedTopic = question;
+            topicId.Text = question.ID.ToString();
+            topic.Text = question.Text;
+        }
+
+        void DeselectChoice() {
+            selectedChoice = null;
+            choiceCorrect.IsChecked = false;
+            choiceAnswer.Text = string.Empty;
+        }
+
+        void FinalRoundSelection(object sender, RoutedPropertyChangedEventArgs<object> e) {
+            TreeViewItem selected = (TreeViewItem)((TreeView)sender).SelectedItem;
+            if (selected is FinalRounder topic) {
+                DeselectChoice();
+                SelectFinalQuestion(topic);
+            } else {
+                selectedChoice = (FinalRounderChoice)selected;
+                choiceCorrect.IsChecked = selectedChoice.Correct;
+                choiceAnswer.Text = selectedChoice.Text;
+                SelectFinalQuestion((FinalRounder)selected.Parent);
+            }
+        }
+
+        void AddTopic(object sender, RoutedEventArgs e) {
+            FinalRounder newTopic = new FinalRounder(0, "New topic");
+            finalRoundList.Add(newTopic);
+            newTopic.IsSelected = true;
+            topic.SelectAll();
+            topic.Focus();
+            unsavedTopic = true;
+        }
+
+        void AddTopicAnswer(object sender, RoutedEventArgs e) {
+            if (selectedTopic != null) {
+                FinalRounderChoice choice = new FinalRounderChoice(false, "New choice");
+                selectedTopic.Items.Add(choice);
+                choice.IsSelected = true;
+                choiceAnswer.SelectAll();
+                choiceAnswer.Focus();
+                unsavedTopic = true;
+            }
+        }
+
+        void TopicIDChange(object sender, TextChangedEventArgs e) {
+            TextBox box = (TextBox)sender;
+            if (!int.TryParse(box.Text, out int id)) {
+                box.Background = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                return;
+            }
+            box.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+            if (selectedTopic != null) {
+                selectedTopic.ID = id;
+                unsavedTopic = true;
+            }
+        }
+
+        void TopicChange(object sender, TextChangedEventArgs e) {
+            if (selectedTopic != null) {
+                selectedTopic.Text = ((TextBox)sender).Text;
+                unsavedTopic = true;
+            }
+        }
+
+        void RemoveTopic(object sender, RoutedEventArgs e) {
+            if (selectedTopic != null) {
+                DeselectChoice();
+                finalRoundList.Remove(selectedTopic);
+                unsavedTopic = true;
+            }
+        }
+
+        void RemoveChoice(object sender, RoutedEventArgs e) {
+            if (selectedChoice != null) {
+                selectedTopic.Items.Remove(selectedChoice);
+                DeselectChoice();
+                unsavedTopic = true;
+            }
+        }
+
+        void FinalRoundImport(object sender, RoutedEventArgs e) => FinalRoundImport(true);
+
+        void FinalRoundMerge(object sender, RoutedEventArgs e) => FinalRoundImport(false);
+
+        void FinalRoundSave(object sender, RoutedEventArgs e) {
+            if (finalRoundFile == null)
+                FinalRoundSaveAs(sender, e);
+            else if (finalRoundList.SaveAs(finalRoundFile))
+                unsavedTopic = false;
+        }
+
+        void FinalRoundSaveAs(object sender, RoutedEventArgs e) {
+            if (saver.ShowDialog() == true && finalRoundList.SaveAs(saver.FileName)) {
+                finalRoundFile = saver.FileName;
+                unsavedTopic = false;
+            }
+        }
+
+        void FinalRoundReleaseCheck(object sender, RoutedEventArgs e) {
+            string finalRoundFileDir = null;
+            if (finalRoundFile != null)
+                finalRoundFileDir = Path.Combine(Path.GetDirectoryName(finalRoundFile), "TDFinalRound");
+            for (int i = 0, end = finalRoundList.Count; i < end; ++i) {
+                for (int j = i + 1; j < end; ++j) {
+                    if (finalRoundList[i].ID == finalRoundList[j].ID) {
+                        Questions.QuestionIssue(string.Format("There are multiple {0} IDs.", finalRoundList[i].ID));
+                        return;
+                    }
+                }
+                if (finalRoundFile != null && !Parsing.CheckAudio(finalRoundFileDir, finalRoundList[i].ID)) {
+                    Questions.QuestionIssue(string.Format("Audio files are missing for topic ID {0}.", finalRoundList[i].ID));
+                    return;
+                }
+            }
+            MessageBox.Show("Release check successful. This topic set is compatible with the game.", "Release check result");
         }
     }
 }

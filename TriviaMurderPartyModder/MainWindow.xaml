@@ -25,7 +25,7 @@
                             <Button Content="Release Check" Margin="10,110,10,0" VerticalAlignment="Top" Click="ReleaseCheck"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Selected question" Height="110" Margin="10,175,10,0" VerticalAlignment="Top">
+                    <GroupBox Grid.Column="1" Header="Selected question" Height="110" Margin="10,170,10,0" VerticalAlignment="Top">
                         <Grid>
                             <Button Content="Question audio" Margin="11,10,10,0" VerticalAlignment="Top" Click="QuestionAudio"/>
                             <Button Content="Intro audio" Margin="11,35,10,0" VerticalAlignment="Top" Click="QuestionIntroAudio"/>
@@ -35,7 +35,43 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Final Round">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+                    <TreeView x:Name="finalRounders" SelectedItemChanged="FinalRoundSelection"/>
+                    <Button Grid.Column="1" Content="Add topic" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="AddTopic"/>
+                    <GroupBox Grid.Column="1" Header="Selected topic" Height="115" Margin="10,35,10,0" VerticalAlignment="Top">
+                        <Grid>
+                            <Button Content="Add answer" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="AddTopicAnswer"/>
+                            <Button Content="Remove" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Click="RemoveTopic"/>
+                            <Label Content="ID:" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
+                            <TextBox x:Name="topicId" Height="20" Margin="39,35,0,0" TextWrapping="NoWrap" VerticalAlignment="Top"
+                                 HorizontalAlignment="Left" Width="100" TextChanged="TopicIDChange" Text="0"/>
+                            <Label Content="Topic:" HorizontalAlignment="Left" Margin="10,57,0,0" VerticalAlignment="Top"/>
+                            <TextBox x:Name="topic" Height="20" Margin="55,61,10,0" TextWrapping="NoWrap" VerticalAlignment="Top" TextChanged="TopicChange"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="Selected choice" Height="90" Margin="10,150,10,0" VerticalAlignment="Top">
+                        <Grid>
+                            <CheckBox x:Name="choiceCorrect" Content="Correct" HorizontalAlignment="Left" Margin="10,13,0,0" VerticalAlignment="Top"/>
+                            <Button Content="Remove" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Click="RemoveChoice"/>
+                            <Label Content="Answer:" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
+                            <TextBox x:Name="choiceAnswer" Height="20" Margin="66,35,10,0" TextWrapping="NoWrap" VerticalAlignment="Top"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Column="2" Header="Data" Height="160" Margin="10,10,10,0" VerticalAlignment="Top">
+                        <Grid>
+                            <Button Content="Import" Margin="10,10,10,0" VerticalAlignment="Top" Click="FinalRoundImport"/>
+                            <Button Content="Merge" Margin="10,35,10,0" VerticalAlignment="Top" Click="FinalRoundMerge"/>
+                            <Button Content="Save" Margin="10,60,10,0" VerticalAlignment="Top" Click="FinalRoundSave"/>
+                            <Button Content="Save As..." Margin="10,85,10,0" VerticalAlignment="Top" Click="FinalRoundSaveAs"/>
+                            <Button Content="Release Check" Margin="10,110,10,0" VerticalAlignment="Top" Click="FinalRoundReleaseCheck"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>
