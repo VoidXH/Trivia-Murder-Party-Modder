@@ -38,7 +38,7 @@
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="258"/>
                         <ColumnDefinition Width="150"/>
                     </Grid.ColumnDefinitions>
                     <TreeView x:Name="finalRounders" SelectedItemChanged="FinalRoundSelection"/>
@@ -46,20 +46,20 @@
                     <GroupBox Grid.Column="1" Header="Selected topic" Height="115" Margin="10,35,10,0" VerticalAlignment="Top">
                         <Grid>
                             <Button Content="Add answer" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="AddTopicAnswer"/>
-                            <Button Content="Remove" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Click="RemoveTopic"/>
+                            <Button Content="Add topic audio" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Click="AddTopicAudio"/>
+                            <Button Content="Remove" Margin="0,35,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Click="RemoveTopic"/>
                             <Label Content="ID:" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
-                            <TextBox x:Name="topicId" Height="20" Margin="39,35,0,0" TextWrapping="NoWrap" VerticalAlignment="Top"
-                                 HorizontalAlignment="Left" Width="100" TextChanged="TopicIDChange" Text="0"/>
+                            <TextBox x:Name="topicId" Height="20" Margin="39,35,115,0" TextWrapping="NoWrap" VerticalAlignment="Top" TextChanged="TopicIDChange" Text="0"/>
                             <Label Content="Topic:" HorizontalAlignment="Left" Margin="10,57,0,0" VerticalAlignment="Top"/>
                             <TextBox x:Name="topic" Height="20" Margin="55,61,10,0" TextWrapping="NoWrap" VerticalAlignment="Top" TextChanged="TopicChange"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Selected choice" Height="90" Margin="10,150,10,0" VerticalAlignment="Top">
                         <Grid>
-                            <CheckBox x:Name="choiceCorrect" Content="Correct" HorizontalAlignment="Left" Margin="10,13,0,0" VerticalAlignment="Top"/>
+                            <CheckBox x:Name="choiceCorrect" Content="Correct" HorizontalAlignment="Left" Margin="10,13,0,0" VerticalAlignment="Top" Checked="ChoiceCorrect" Unchecked="ChoiceCorrect"/>
                             <Button Content="Remove" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Click="RemoveChoice"/>
                             <Label Content="Answer:" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
-                            <TextBox x:Name="choiceAnswer" Height="20" Margin="66,35,10,0" TextWrapping="NoWrap" VerticalAlignment="Top"/>
+                            <TextBox x:Name="choiceAnswer" Height="20" Margin="66,35,10,0" TextWrapping="NoWrap" VerticalAlignment="Top" TextChanged="ChoiceText"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Grid.Column="2" Header="Data" Height="160" Margin="10,10,10,0" VerticalAlignment="Top">

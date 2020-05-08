@@ -51,7 +51,7 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        void Window_Closing(object sender, CancelEventArgs e) => e.Cancel = !UnsavedQuestionPrompt() && !UnsavedTopicPrompt();
+        void Window_Closing(object sender, CancelEventArgs e) => e.Cancel = !UnsavedQuestionPrompt() || !UnsavedTopicPrompt();
 
         void QuestionImport(bool clear) {
             if (!clear || UnsavedQuestionPrompt()) {
@@ -101,7 +101,7 @@ namespace TriviaMurderPartyModder {
             MessageBox.Show("Release check successful. This question set is compatible with the game.", "Release check result");
         }
 
-        string LoadAudio() {
+        string LoadQuestionAudio() {
             if (questions.SelectedItem == null) {
                 Questions.QuestionIssue("Select the question to import the audio of.");
                 return null;
@@ -117,13 +117,13 @@ namespace TriviaMurderPartyModder {
         }
 
         void QuestionAudio(object sender, RoutedEventArgs e) {
-            string file = LoadAudio();
+            string file = LoadQuestionAudio();
             if (file != null)
                 ((Question)questions.SelectedItem).ImportQuestionAudio(questionFile, file);
         }
 
         void QuestionIntroAudio(object sender, RoutedEventArgs e) {
-            string file = LoadAudio();
+            string file = LoadQuestionAudio();
             if (file != null)
                 ((Question)questions.SelectedItem).ImportIntroAudio(questionFile, file);
         }
@@ -186,11 +186,26 @@ namespace TriviaMurderPartyModder {
             if (selectedTopic != null) {
                 FinalRounderChoice choice = new FinalRounderChoice(false, "New choice");
                 selectedTopic.Items.Add(choice);
+                selectedTopic.IsExpanded = true;
                 choice.IsSelected = true;
                 choiceAnswer.SelectAll();
                 choiceAnswer.Focus();
                 unsavedTopic = true;
             }
+        }
+
+        void AddTopicAudio(object sender, RoutedEventArgs e) {
+            if (finalRounders.SelectedItem == null) {
+                Questions.QuestionIssue("Select the topic to import the audio of.");
+                return;
+            }
+            if (finalRoundFile == null) {
+                Questions.QuestionIssue("The final round file has to exist first. Export your work or import an existing final round file.");
+                return;
+            }
+            OpenFileDialog opener = new OpenFileDialog { Filter = "Ogg Vorbis Audio (*.ogg)|*.ogg" };
+            if (opener.ShowDialog() == true)
+                selectedTopic.ImportTopicAudio(finalRoundFile, opener.FileName);
         }
 
         void TopicIDChange(object sender, TextChangedEventArgs e) {
@@ -217,6 +232,20 @@ namespace TriviaMurderPartyModder {
             if (selectedTopic != null) {
                 DeselectChoice();
                 finalRoundList.Remove(selectedTopic);
+                unsavedTopic = true;
+            }
+        }
+
+        void ChoiceCorrect(object sender, RoutedEventArgs e) {
+            if (selectedChoice != null) {
+                selectedChoice.Correct = ((CheckBox)sender).IsChecked.Value;
+                unsavedTopic = true;
+            }
+        }
+
+        void ChoiceText(object sender, TextChangedEventArgs e) {
+            if (selectedChoice != null) {
+                selectedChoice.Text = ((TextBox)sender).Text;
                 unsavedTopic = true;
             }
         }

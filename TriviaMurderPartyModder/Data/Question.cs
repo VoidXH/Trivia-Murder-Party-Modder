@@ -97,8 +97,8 @@ namespace TriviaMurderPartyModder.Data {
                     "{\"t\":\"A\",\"v\":\"aud\",\"n\":\"Q\"},{\"t\":\"A\",\"n\":\"Intro\"},{\"t\":\"A\",\"n\":\"Choices\"}," +
                     "{\"t\":\"A\",\"n\":\"Vamp\"},{\"t\":\"G\",\"n\":\"Pic\"}]}");
                 File.Copy(audioFile, Path.Combine(folder, "aud.ogg"));
-            } else if (!File.Exists(dataFile) || MessageBox.Show("This question already has question audio. Do you want to overwrite?", "Overwrite",
-                MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.Yes) {
+            } else if (!File.Exists(dataFile) || MessageBox.Show("This question already has question audio. Do you want to overwrite?",
+                "Overwrite", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.Yes) {
                 string dataContents = File.ReadAllText(dataFile);
                 int q = dataContents.IndexOf("\"Q\""), preFile = dataContents.LastIndexOf(",", q);
                 int postFile = dataContents.LastIndexOf("\"", preFile);
