@@ -182,7 +182,7 @@ namespace TriviaMurderPartyModder {
             unsavedTopic = true;
         }
 
-        void AddTopicAnswer(object sender, RoutedEventArgs e) {
+        void AddTopicChoice(object sender, RoutedEventArgs e) {
             if (selectedTopic != null) {
                 FinalRounderChoice choice = new FinalRounderChoice(false, "New choice");
                 selectedTopic.Items.Add(choice);
