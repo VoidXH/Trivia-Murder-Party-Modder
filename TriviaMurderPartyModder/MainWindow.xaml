@@ -16,16 +16,17 @@
                     </Grid.ColumnDefinitions>
                     <DataGrid x:Name="questions" IsManipulationEnabled="True" PreviewKeyDown="MoveRight">
                     </DataGrid>
-                    <GroupBox Grid.Column="1" Header="Data" Height="160" Margin="10,10,10,0" VerticalAlignment="Top">
+                    <GroupBox Grid.Column="1" Header="Data" Height="185" Margin="10,10,10,0" VerticalAlignment="Top">
                         <Grid>
                             <Button Content="Import" Margin="10,10,10,0" VerticalAlignment="Top" Click="QuestionImport"/>
-                            <Button Content="Merge" Margin="10,35,10,0" VerticalAlignment="Top" Click="QuestionMerge"/>
-                            <Button Content="Save" Margin="10,60,10,0" VerticalAlignment="Top" Click="QuestionSave"/>
-                            <Button Content="Save As..." Margin="10,85,10,0" VerticalAlignment="Top" Click="QuestionSaveAs"/>
-                            <Button Content="Release Check" Margin="10,110,10,0" VerticalAlignment="Top" Click="ReleaseCheck"/>
+                            <Button x:Name="questionLast" Content="Import last save" Margin="10,35,10,0" VerticalAlignment="Top" Click="QuestionImportLastSave"/>
+                            <Button Content="Merge" Margin="10,60,10,0" VerticalAlignment="Top" Click="QuestionMerge"/>
+                            <Button Content="Save" Margin="10,85,10,0" VerticalAlignment="Top" Click="QuestionSave"/>
+                            <Button Content="Save As..." Margin="10,110,10,0" VerticalAlignment="Top" Click="QuestionSaveAs"/>
+                            <Button Content="Release Check" Margin="10,135,10,0" VerticalAlignment="Top" Click="ReleaseCheck"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Selected question" Height="110" Margin="10,170,10,0" VerticalAlignment="Top">
+                    <GroupBox Grid.Column="1" Header="Selected question" Height="110" Margin="10,195,10,0" VerticalAlignment="Top">
                         <Grid>
                             <Button Content="Question audio" Margin="11,10,10,0" VerticalAlignment="Top" Click="QuestionAudio"/>
                             <Button Content="Intro audio" Margin="11,35,10,0" VerticalAlignment="Top" Click="QuestionIntroAudio"/>
@@ -62,13 +63,14 @@
                             <TextBox x:Name="choiceAnswer" Height="20" Margin="66,35,10,0" TextWrapping="NoWrap" VerticalAlignment="Top" TextChanged="ChoiceText"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Grid.Column="2" Header="Data" Height="160" Margin="10,10,10,0" VerticalAlignment="Top">
+                    <GroupBox Grid.Column="2" Header="Data" Height="185" Margin="10,10,10,0" VerticalAlignment="Top">
                         <Grid>
                             <Button Content="Import" Margin="10,10,10,0" VerticalAlignment="Top" Click="FinalRoundImport"/>
-                            <Button Content="Merge" Margin="10,35,10,0" VerticalAlignment="Top" Click="FinalRoundMerge"/>
-                            <Button Content="Save" Margin="10,60,10,0" VerticalAlignment="Top" Click="FinalRoundSave"/>
-                            <Button Content="Save As..." Margin="10,85,10,0" VerticalAlignment="Top" Click="FinalRoundSaveAs"/>
-                            <Button Content="Release Check" Margin="10,110,10,0" VerticalAlignment="Top" Click="FinalRoundReleaseCheck"/>
+                            <Button x:Name="finalRoundLast" Content="Import last save" Margin="10,35,10,0" VerticalAlignment="Top" Click="FinalRoundImportLastSave"/>
+                            <Button Content="Merge" Margin="10,60,10,0" VerticalAlignment="Top" Click="FinalRoundMerge"/>
+                            <Button Content="Save" Margin="10,85,10,0" VerticalAlignment="Top" Click="FinalRoundSave"/>
+                            <Button Content="Save As..." Margin="10,110,10,0" VerticalAlignment="Top" Click="FinalRoundSaveAs"/>
+                            <Button Content="Release Check" Margin="10,135,10,0" VerticalAlignment="Top" Click="FinalRoundReleaseCheck"/>
                         </Grid>
                     </GroupBox>
                 </Grid>

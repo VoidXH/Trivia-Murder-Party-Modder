@@ -37,6 +37,12 @@ namespace TriviaMurderPartyModder {
 
         public MainWindow() {
             InitializeComponent();
+            string lastQuestion = Properties.Settings.Default.lastQuestion;
+            if (string.IsNullOrEmpty(lastQuestion) || !File.Exists(lastQuestion))
+                questionLast.IsEnabled = false;
+            string lastFinalRound = Properties.Settings.Default.lastFinalRound;
+            if (string.IsNullOrEmpty(lastFinalRound) || !File.Exists(lastFinalRound))
+                finalRoundLast.IsEnabled = false;
             questions.ItemsSource = questionList;
             finalRounders.ItemsSource = finalRoundList;
             questions.CellEditEnding += Questions_CellEditEnding;
@@ -51,7 +57,14 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        void Window_Closing(object sender, CancelEventArgs e) => e.Cancel = !UnsavedQuestionPrompt() || !UnsavedTopicPrompt();
+        void Window_Closing(object sender, CancelEventArgs e) {
+            e.Cancel = !UnsavedQuestionPrompt() || !UnsavedTopicPrompt();
+            if (!e.Cancel) {
+                Properties.Settings.Default.lastQuestion = questionFile;
+                Properties.Settings.Default.lastFinalRound = finalRoundFile;
+                Properties.Settings.Default.Save();
+            }
+        }
 
         void QuestionImport(bool clear) {
             if (!clear || UnsavedQuestionPrompt()) {
@@ -65,6 +78,15 @@ namespace TriviaMurderPartyModder {
         }
 
         void QuestionImport(object sender, RoutedEventArgs e) => QuestionImport(true);
+
+        void QuestionImportLastSave(object sender, RoutedEventArgs e) {
+            if (UnsavedQuestionPrompt()) {
+                questionList.Clear();
+                questionList.Add(questionFile = Properties.Settings.Default.lastQuestion);
+                unsavedQuestion = false;
+                questionLast.IsEnabled = false;
+            }
+        }
 
         void QuestionMerge(object sender, RoutedEventArgs e) => QuestionImport(false);
 
@@ -145,6 +167,15 @@ namespace TriviaMurderPartyModder {
                     finalRoundList.Add(finalRoundFile = opener.FileName);
                 }
                 unsavedTopic = !clear;
+            }
+        }
+
+        void FinalRoundImportLastSave(object sender, RoutedEventArgs e) {
+            if (UnsavedQuestionPrompt()) {
+                finalRoundList.Clear();
+                finalRoundList.Add(questionFile = Properties.Settings.Default.lastFinalRound);
+                unsavedQuestion = false;
+                finalRoundLast.IsEnabled = false;
             }
         }
 
