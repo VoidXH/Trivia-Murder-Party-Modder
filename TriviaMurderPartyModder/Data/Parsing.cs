@@ -51,6 +51,7 @@ namespace TriviaMurderPartyModder.Data {
             return source.Substring(from, to - from).Replace("\\\"", "\"");
         }
 
-        public static string MakeTextCompatible(string source) => source.Replace('ő', 'ö').Replace('ű', 'ü').Replace("\"", "\\\"");
+        public static string MakeTextCompatible(string source) =>
+            source.Replace('ő', 'ö').Replace('Ő', 'Ö').Replace('ű', 'ü').Replace('Ű', 'Ü').Replace("\"", "\\\"");
     }
 }
