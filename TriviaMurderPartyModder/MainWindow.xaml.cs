@@ -138,17 +138,15 @@ namespace TriviaMurderPartyModder {
             return null;
         }
 
-        void QuestionAudio(object sender, RoutedEventArgs e) {
+        void ImportQuestionAudio(AudioType type) {
             string file = LoadQuestionAudio();
             if (file != null)
-                ((Question)questions.SelectedItem).ImportQuestionAudio(questionFile, file);
+                ((Question)questions.SelectedItem).ImportAudio(questionFile, type, file);
         }
 
-        void QuestionIntroAudio(object sender, RoutedEventArgs e) {
-            string file = LoadQuestionAudio();
-            if (file != null)
-                ((Question)questions.SelectedItem).ImportIntroAudio(questionFile, file);
-        }
+        void QuestionAudio(object sender, RoutedEventArgs e) => ImportQuestionAudio(AudioType.Q);
+
+        void QuestionIntroAudio(object sender, RoutedEventArgs e) => ImportQuestionAudio(AudioType.Intro);
 
         void QuestionRemove(object sender, RoutedEventArgs e) {
             if (questions.SelectedItem == null) {
@@ -173,7 +171,7 @@ namespace TriviaMurderPartyModder {
         void FinalRoundImportLastSave(object sender, RoutedEventArgs e) {
             if (UnsavedQuestionPrompt()) {
                 finalRoundList.Clear();
-                finalRoundList.Add(questionFile = Properties.Settings.Default.lastFinalRound);
+                finalRoundList.Add(finalRoundFile = Properties.Settings.Default.lastFinalRound);
                 unsavedQuestion = false;
                 finalRoundLast.IsEnabled = false;
             }

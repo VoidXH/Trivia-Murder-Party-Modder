@@ -66,6 +66,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Data\DataJet.cs" />
+    <Compile Include="Data\EntryType.cs" />
     <Compile Include="Data\FinalRounder.cs" />
     <Compile Include="Data\FinalRounderChoice.cs" />
     <Compile Include="Data\FinalRounders.cs" />
