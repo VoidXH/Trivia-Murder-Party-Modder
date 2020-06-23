@@ -23,7 +23,7 @@
                             <Button Content="Merge" Margin="10,60,10,0" VerticalAlignment="Top" Click="QuestionMerge"/>
                             <Button Content="Save" Margin="10,85,10,0" VerticalAlignment="Top" Click="QuestionSave"/>
                             <Button Content="Save As..." Margin="10,110,10,0" VerticalAlignment="Top" Click="QuestionSaveAs"/>
-                            <Button Content="Release Check" Margin="10,135,10,0" VerticalAlignment="Top" Click="ReleaseCheck"/>
+                            <Button Content="Release Check" Margin="10,135,10,0" VerticalAlignment="Top" Click="QuestionReleaseCheck"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Selected question" Height="110" Margin="10,195,10,0" VerticalAlignment="Top">

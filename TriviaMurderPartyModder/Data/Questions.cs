@@ -1,11 +1,12 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Windows;
 
 namespace TriviaMurderPartyModder.Data {
-    public class Questions : ObservableCollection<Question> {
-        public void Add(string fileName) {
+    public class Questions : DataFile<Question> {
+        public Questions() : base("questions") { }
+
+        protected override void Add(string fileName) {
             string contents = File.ReadAllText(fileName);
             int position = 0;
             while ((position = contents.IndexOf("\"x\"", position) + 3) != 2) {
@@ -34,7 +35,7 @@ namespace TriviaMurderPartyModder.Data {
 
         public static void QuestionIssue(string text) => MessageBox.Show(text, "Question issue", MessageBoxButton.OK, MessageBoxImage.Error);
 
-        public bool SaveAs(string name) {
+        protected override bool SaveAs(string name) {
             StringBuilder output = new StringBuilder("{\"episodeid\":1244,\"content\":[");
             for (int i = 0, end = Count; i < end; ++i) {
                 Question q = this[i];

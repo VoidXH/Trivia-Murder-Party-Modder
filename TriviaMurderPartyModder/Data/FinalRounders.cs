@@ -1,11 +1,12 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Windows;
 
 namespace TriviaMurderPartyModder.Data {
-    public class FinalRounders : ObservableCollection<FinalRounder> {
-        public void Add(string fileName) {
+    public class FinalRounders : DataFile<FinalRounder> {
+        public FinalRounders() : base("final round topics") { }
+
+        protected override void Add(string fileName) {
             string contents = File.ReadAllText(fileName);
             int position = 0;
             while ((position = contents.IndexOf("\"x\"", position) + 3) != 2) {
@@ -37,7 +38,7 @@ namespace TriviaMurderPartyModder.Data {
         public static void FinalRoundIssue(string text) =>
             MessageBox.Show(text, "Final round issue", MessageBoxButton.OK, MessageBoxImage.Error);
 
-        public bool SaveAs(string name) {
+        protected override bool SaveAs(string name) {
             StringBuilder output = new StringBuilder("{\"episodeid\":1253,\"content\":[");
             for (int i = 0, end = Count; i < end; ++i) {
                 FinalRounder q = this[i];

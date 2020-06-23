@@ -46,6 +46,11 @@ namespace TriviaMurderPartyModder.Data {
                 ReplaceValue(contents.LastIndexOf("\"v\"", pos), value);
         }
 
+        public void SetValue(string name, string value) {
+            ReplaceValue(name, value);
+            Commit();
+        }
+
         public void SetAudioFile(AudioType type, string sourceFile) {
             string defaultName = type.ToString();
             int pos = Contents.LastIndexOf(string.Format("\"{0}\"", defaultName)), v = contents.LastIndexOf("\"v\"", pos);
@@ -57,8 +62,7 @@ namespace TriviaMurderPartyModder.Data {
                     return;
                 File.Delete(Path.Combine(Folder, ReplaceValue(v, defaultName) + ".ogg"));
             }
-            ReplaceValue("Has" + type.ToString(), "true");
-            Commit();
+            SetValue("Has" + type.ToString(), "true");
             File.Copy(sourceFile, Path.Combine(Folder, defaultName + ".ogg"));
         }
 
