@@ -13,8 +13,11 @@ namespace TriviaMurderPartyModder {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        readonly OpenFileDialog audioBrowser = new OpenFileDialog { Filter = "Ogg Vorbis Audio (*.ogg)|*.ogg" };
+
         readonly Questions questionList = new Questions();
         readonly FinalRounders finalRoundList = new FinalRounders();
+        readonly WorstDrawings worstDrawingList = new WorstDrawings();
 
         FinalRounder selectedTopic;
         FinalRounderChoice selectedChoice;
@@ -27,9 +30,17 @@ namespace TriviaMurderPartyModder {
             string lastFinalRound = Properties.Settings.Default.lastFinalRound;
             if (string.IsNullOrEmpty(lastFinalRound) || !File.Exists(lastFinalRound))
                 finalRoundLast.IsEnabled = false;
+            string lastWorstDrawing = Properties.Settings.Default.lastWorstDrawing;
+            if (string.IsNullOrEmpty(lastWorstDrawing) || !File.Exists(lastWorstDrawing))
+                worstDrawingLast.IsEnabled = false;
             questions.ItemsSource = questionList;
             finalRounders.ItemsSource = finalRoundList;
+            worstDrawings.ItemsSource = worstDrawingList;
             questions.CellEditEnding += Questions_CellEditEnding;
+            worstDrawings.CellEditEnding += WorstDrawings_CellEditEnding;
+        }
+
+        void LoadAudio() {
         }
 
         void MoveRight(object sender, KeyEventArgs e) {
@@ -40,10 +51,11 @@ namespace TriviaMurderPartyModder {
         }
 
         void Window_Closing(object sender, CancelEventArgs e) {
-            e.Cancel = !questionList.UnsavedPrompt() || !finalRoundList.UnsavedPrompt();
+            e.Cancel = !questionList.UnsavedPrompt() || !finalRoundList.UnsavedPrompt() || !worstDrawingList.UnsavedPrompt();
             if (!e.Cancel) {
                 Properties.Settings.Default.lastQuestion = questionList.FileName;
                 Properties.Settings.Default.lastFinalRound = finalRoundList.FileName;
+                Properties.Settings.Default.lastWorstDrawing = worstDrawingList.FileName;
                 Properties.Settings.Default.Save();
             }
         }
@@ -83,9 +95,8 @@ namespace TriviaMurderPartyModder {
                 Questions.QuestionIssue("The question file has to exist first. Export your work or import an existing question file.");
                 return null;
             }
-            OpenFileDialog opener = new OpenFileDialog { Filter = "Ogg Vorbis Audio (*.ogg)|*.ogg" };
-            if (opener.ShowDialog() == true)
-                return opener.FileName;
+            if (audioBrowser.ShowDialog() == true)
+                return audioBrowser.FileName;
             return null;
         }
 
@@ -154,16 +165,15 @@ namespace TriviaMurderPartyModder {
 
         void AddTopicAudio(object sender, RoutedEventArgs e) {
             if (finalRounders.SelectedItem == null) {
-                Questions.QuestionIssue("Select the topic to import the audio of.");
+                FinalRounders.FinalRoundIssue("Select the topic to import the audio of.");
                 return;
             }
             if (finalRoundList.FileName == null) {
-                Questions.QuestionIssue("The final round file has to exist first. Export your work or import an existing final round file.");
+                FinalRounders.FinalRoundIssue("The final round file has to exist first. Export your work or import an existing final round file.");
                 return;
             }
-            OpenFileDialog opener = new OpenFileDialog { Filter = "Ogg Vorbis Audio (*.ogg)|*.ogg" };
-            if (opener.ShowDialog() == true)
-                selectedTopic.ImportTopicAudio(finalRoundList.FileName, opener.FileName);
+            if (audioBrowser.ShowDialog() == true)
+                selectedTopic.ImportTopicAudio(finalRoundList.FileName, audioBrowser.FileName);
         }
 
         void TopicIDChange(object sender, TextChangedEventArgs e) {
@@ -228,16 +238,67 @@ namespace TriviaMurderPartyModder {
             for (int i = 0, end = finalRoundList.Count; i < end; ++i) {
                 for (int j = i + 1; j < end; ++j) {
                     if (finalRoundList[i].ID == finalRoundList[j].ID) {
-                        Questions.QuestionIssue(string.Format("There are multiple {0} IDs.", finalRoundList[i].ID));
+                        FinalRounders.FinalRoundIssue(string.Format("There are multiple {0} IDs.", finalRoundList[i].ID));
                         return;
                     }
                 }
+                if (finalRoundList[i].Items.Count < 3) {
+                    FinalRounders.FinalRoundIssue(string.Format("{0} has less than 3 answers.", finalRoundList[i].Text));
+                    return;
+                }
                 if (finalRoundList.FileName != null && !Parsing.CheckAudio(finalRoundFileDir, finalRoundList[i].ID)) {
-                    Questions.QuestionIssue(string.Format("Audio files are missing for topic ID {0}.", finalRoundList[i].ID));
+                    FinalRounders.FinalRoundIssue(string.Format("Audio files are missing for topic ID {0}.", finalRoundList[i].ID));
                     return;
                 }
             }
             MessageBox.Show("Release check successful. This topic set is compatible with the game.", "Release check result");
+        }
+
+        void WorstDrawings_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => worstDrawingList.Unsaved = true;
+        void WorstDrawingImport(object _, RoutedEventArgs e) => worstDrawingList.Import(true);
+        void WorstDrawingImportLastSave(object _, RoutedEventArgs e) => worstDrawingList.ImportFrom(Properties.Settings.Default.lastWorstDrawing);
+        void WorstDrawingMerge(object _, RoutedEventArgs e) => worstDrawingList.Import(false);
+        void WorstDrawingSave(object _, RoutedEventArgs e) => worstDrawingList.Save();
+        void WorstDrawingSaveAs(object _, RoutedEventArgs e) => worstDrawingList.SaveAs();
+
+        void WorstDrawingReleaseCheck(object sender, RoutedEventArgs e) {
+            string fileDir = null;
+            if (worstDrawingList.FileName != null)
+                fileDir = Path.Combine(Path.GetDirectoryName(worstDrawingList.FileName), "TDWorstDrawing");
+            for (int i = 0, end = worstDrawingList.Count; i < end; ++i) {
+                for (int j = i + 1; j < end; ++j) {
+                    if (worstDrawingList[i].ID == worstDrawingList[j].ID) {
+                        WorstDrawings.DrawingIssue(string.Format("There are multiple {0} IDs.", questionList[i].ID));
+                        return;
+                    }
+                }
+                if (worstDrawingList.FileName != null && !Parsing.CheckAudio(fileDir, worstDrawingList[i].ID)) {
+                    WorstDrawings.DrawingIssue(string.Format("Audio files are missing for drawing ID {0}.", worstDrawingList[i].ID));
+                    return;
+                }
+            }
+            MessageBox.Show("Release check successful. This drawing set is compatible with the game.", "Release check result");
+        }
+
+        void WorstDrawingAudio(object sender, RoutedEventArgs e) {
+            if (worstDrawings.SelectedItem == null) {
+                WorstDrawings.DrawingIssue("Select the drawing to import the audio of.");
+                return;
+            }
+            if (worstDrawingList.FileName == null) {
+                WorstDrawings.DrawingIssue("The drawings file has to exist first. Export your work or import an existing drawings file.");
+                return;
+            }
+            if (audioBrowser.ShowDialog() == true)
+                ((WorstDrawing)worstDrawings.SelectedItem).ImportAudio(worstDrawingList.FileName, audioBrowser.FileName);
+        }
+
+        void WorstDrawingRemove(object sender, RoutedEventArgs e) {
+            if (worstDrawings.SelectedItem == null) {
+                WorstDrawings.DrawingIssue("Select the drawing to remove.");
+                return;
+            }
+            worstDrawingList.Remove((WorstDrawing)worstDrawings.SelectedItem);
         }
     }
 }

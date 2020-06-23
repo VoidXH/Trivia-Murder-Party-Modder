@@ -75,6 +75,32 @@
                     </GroupBox>
                 </Grid>
             </TabItem>
+            <TabItem Header="Worst drawing">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid x:Name="worstDrawings" IsManipulationEnabled="True" PreviewKeyDown="MoveRight">
+                    </DataGrid>
+                    <GroupBox Grid.Column="1" Header="Data" Height="185" Margin="10,10,10,0" VerticalAlignment="Top">
+                        <Grid>
+                            <Button Content="Import" Margin="10,10,10,0" VerticalAlignment="Top" Click="WorstDrawingImport"/>
+                            <Button x:Name="worstDrawingLast" Content="Import last save" Margin="10,35,10,0" VerticalAlignment="Top" Click="WorstDrawingImportLastSave"/>
+                            <Button Content="Merge" Margin="10,60,10,0" VerticalAlignment="Top" Click="WorstDrawingMerge"/>
+                            <Button Content="Save" Margin="10,85,10,0" VerticalAlignment="Top" Click="WorstDrawingSave"/>
+                            <Button Content="Save As..." Margin="10,110,10,0" VerticalAlignment="Top" Click="WorstDrawingSaveAs"/>
+                            <Button Content="Release Check" Margin="10,135,10,0" VerticalAlignment="Top" Click="WorstDrawingReleaseCheck"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="Selected drawing" Height="85" Margin="10,195,10,0" VerticalAlignment="Top">
+                        <Grid>
+                            <Button Content="Import audio" Margin="11,10,10,0" VerticalAlignment="Top" Click="WorstDrawingAudio"/>
+                            <Button Content="Remove" Margin="11,35,10,0" VerticalAlignment="Top" Click="WorstDrawingRemove"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

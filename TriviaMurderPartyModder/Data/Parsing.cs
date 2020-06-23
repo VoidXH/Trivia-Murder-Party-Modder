@@ -15,10 +15,10 @@ namespace TriviaMurderPartyModder.Data {
                 string value = dataContents.Substring(valueStart, pos - valueStart);
                 if (value.Equals("true") || value.Equals("false"))
                     continue;
-                if (!File.Exists(Path.Combine(folder, value + ".ogg")))
-                    return false;
+                if (File.Exists(Path.Combine(folder, value + ".ogg")))
+                    return true;
             }
-            return true;
+            return false;
         }
 
         public static int FindArrayEnd(ref string source, int from) {
