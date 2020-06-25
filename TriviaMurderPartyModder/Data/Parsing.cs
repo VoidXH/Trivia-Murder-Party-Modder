@@ -15,8 +15,10 @@ namespace TriviaMurderPartyModder.Data {
                 string value = dataContents.Substring(valueStart, pos - valueStart);
                 if (value.Equals("true") || value.Equals("false"))
                     continue;
-                if (File.Exists(Path.Combine(folder, value + ".ogg")))
-                    return true;
+                try {
+                    if (File.Exists(Path.Combine(folder, value + ".ogg")))
+                        return true;
+                } catch { }
             }
             return false;
         }
@@ -52,6 +54,6 @@ namespace TriviaMurderPartyModder.Data {
         }
 
         public static string MakeTextCompatible(string source) =>
-            source.Replace('ő', 'ö').Replace('Ő', 'Ö').Replace('ű', 'ü').Replace('Ű', 'Ü').Replace("\"", "\\\"");
+            source.Replace('ő', 'ö').Replace('Ő', 'Ö').Replace('ű', 'ü').Replace('Ű', 'Ü').Replace("\"", "\\\"").Replace("'", "\\u2019");
     }
 }

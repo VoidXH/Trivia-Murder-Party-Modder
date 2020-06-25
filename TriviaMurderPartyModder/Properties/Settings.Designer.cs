@@ -58,5 +58,17 @@ namespace TriviaMurderPartyModder.Properties {
                 this["lastWorstDrawing"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string lastWorstResponse {
+            get {
+                return ((string)(this["lastWorstResponse"]));
+            }
+            set {
+                this["lastWorstResponse"] = value;
+            }
+        }
     }
 }

@@ -51,6 +51,12 @@ namespace TriviaMurderPartyModder.Data {
             Commit();
         }
 
+        public void SetValues(string[] names, string value) {
+            for (int i = 0; i < names.Length; ++i)
+                ReplaceValue(names[i], value);
+            Commit();
+        }
+
         public void SetAudioFile(AudioType type, string sourceFile) {
             string defaultName = type.ToString();
             int pos = Contents.LastIndexOf(string.Format("\"{0}\"", defaultName)), v = contents.LastIndexOf("\"v\"", pos);

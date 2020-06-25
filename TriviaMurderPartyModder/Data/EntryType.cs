@@ -2,7 +2,8 @@
     public enum EntryType {
         TDQuestion,
         TDFinalRound,
-        TDWorstDrawing
+        TDWorstDrawing,
+        TDWorstResponse
     }
 
     public enum AudioType {
@@ -17,6 +18,10 @@
         /// <summary>
         /// Used for worst drawing.
         /// </summary>
-        JokeAudio
+        JokeAudio,
+        /// <summary>
+        /// Used for worst response.
+        /// </summary>
+        QuestionAudio
     }
 }

@@ -18,6 +18,7 @@ namespace TriviaMurderPartyModder {
         readonly Questions questionList = new Questions();
         readonly FinalRounders finalRoundList = new FinalRounders();
         readonly WorstDrawings worstDrawingList = new WorstDrawings();
+        readonly WorstResponses worstResponseList = new WorstResponses();
 
         FinalRounder selectedTopic;
         FinalRounderChoice selectedChoice;
@@ -33,9 +34,13 @@ namespace TriviaMurderPartyModder {
             string lastWorstDrawing = Properties.Settings.Default.lastWorstDrawing;
             if (string.IsNullOrEmpty(lastWorstDrawing) || !File.Exists(lastWorstDrawing))
                 worstDrawingLast.IsEnabled = false;
+            string lastWorstResponse = Properties.Settings.Default.lastWorstResponse;
+            if (string.IsNullOrEmpty(lastWorstResponse) || !File.Exists(lastWorstResponse))
+                worstResponseLast.IsEnabled = false;
             questions.ItemsSource = questionList;
             finalRounders.ItemsSource = finalRoundList;
             worstDrawings.ItemsSource = worstDrawingList;
+            worstResponses.ItemsSource = worstResponseList;
             questions.CellEditEnding += Questions_CellEditEnding;
             worstDrawings.CellEditEnding += WorstDrawings_CellEditEnding;
         }
@@ -56,6 +61,7 @@ namespace TriviaMurderPartyModder {
                 Properties.Settings.Default.lastQuestion = questionList.FileName;
                 Properties.Settings.Default.lastFinalRound = finalRoundList.FileName;
                 Properties.Settings.Default.lastWorstDrawing = worstDrawingList.FileName;
+                Properties.Settings.Default.lastWorstResponse = worstResponseList.FileName;
                 Properties.Settings.Default.Save();
             }
         }
@@ -268,7 +274,7 @@ namespace TriviaMurderPartyModder {
             for (int i = 0, end = worstDrawingList.Count; i < end; ++i) {
                 for (int j = i + 1; j < end; ++j) {
                     if (worstDrawingList[i].ID == worstDrawingList[j].ID) {
-                        WorstDrawings.DrawingIssue(string.Format("There are multiple {0} IDs.", questionList[i].ID));
+                        WorstDrawings.DrawingIssue(string.Format("There are multiple {0} IDs.", worstDrawingList[i].ID));
                         return;
                     }
                 }
@@ -299,6 +305,53 @@ namespace TriviaMurderPartyModder {
                 return;
             }
             worstDrawingList.Remove((WorstDrawing)worstDrawings.SelectedItem);
+        }
+
+        void WorstResponses_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => worstResponseList.Unsaved = true;
+        void WorstResponseImport(object _, RoutedEventArgs e) => worstResponseList.Import(true);
+        void WorstResponseImportLastSave(object _, RoutedEventArgs e) => worstResponseList.ImportFrom(Properties.Settings.Default.lastWorstResponse);
+        void WorstResponseMerge(object _, RoutedEventArgs e) => worstResponseList.Import(false);
+        void WorstResponseSave(object _, RoutedEventArgs e) => worstResponseList.Save();
+        void WorstResponseSaveAs(object _, RoutedEventArgs e) => worstResponseList.SaveAs();
+
+        void WorstResponseReleaseCheck(object sender, RoutedEventArgs e) {
+            string fileDir = null;
+            if (worstResponseList.FileName != null)
+                fileDir = Path.Combine(Path.GetDirectoryName(worstResponseList.FileName), "TDWorstResponse");
+            for (int i = 0, end = worstResponseList.Count; i < end; ++i) {
+                for (int j = i + 1; j < end; ++j) {
+                    if (worstResponseList[i].ID == worstResponseList[j].ID) {
+                        WorstResponses.ResponseIssue(string.Format("There are multiple {0} IDs.", worstResponseList[i].ID));
+                        return;
+                    }
+                }
+                if (worstResponseList.FileName != null && !Parsing.CheckAudio(fileDir, worstResponseList[i].ID)) {
+                    WorstResponses.ResponseIssue(string.Format("Audio files are missing for response ID {0}.", worstResponseList[i].ID));
+                    return;
+                }
+            }
+            MessageBox.Show("Release check successful. This response set is compatible with the game.", "Release check result");
+        }
+
+        void WorstResponseAudio(object sender, RoutedEventArgs e) {
+            if (worstResponses.SelectedItem == null) {
+                WorstResponses.ResponseIssue("Select the response to import the audio of.");
+                return;
+            }
+            if (worstResponseList.FileName == null) {
+                WorstResponses.ResponseIssue("The response file has to exist first. Export your work or import an existing response file.");
+                return;
+            }
+            if (audioBrowser.ShowDialog() == true)
+                ((WorstResponse)worstResponses.SelectedItem).ImportAudio(worstResponseList.FileName, audioBrowser.FileName);
+        }
+
+        void WorstResponseRemove(object sender, RoutedEventArgs e) {
+            if (worstResponses.SelectedItem == null) {
+                WorstResponses.ResponseIssue("Select the response to remove.");
+                return;
+            }
+            worstResponseList.Remove((WorstResponse)worstResponses.SelectedItem);
         }
     }
 }

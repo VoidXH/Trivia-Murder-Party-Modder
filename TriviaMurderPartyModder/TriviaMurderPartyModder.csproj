@@ -77,6 +77,8 @@
     <Compile Include="Data\Questions.cs" />
     <Compile Include="Data\WorstDrawing.cs" />
     <Compile Include="Data\WorstDrawings.cs" />
+    <Compile Include="Data\WorstResponse.cs" />
+    <Compile Include="Data\WorstResponses.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
