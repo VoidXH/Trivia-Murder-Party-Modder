@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 using TriviaMurderPartyModder.Data;
+using TriviaMurderPartyModder.Dialogs;
 
 namespace TriviaMurderPartyModder {
     /// <summary>
@@ -166,6 +167,26 @@ namespace TriviaMurderPartyModder {
                 choiceAnswer.SelectAll();
                 choiceAnswer.Focus();
                 finalRoundList.Unsaved = true;
+            }
+        }
+
+        void AddTopicChoices(object sender, RoutedEventArgs e) {
+            if (selectedTopic != null) {
+                BulkOption form = new BulkOption();
+                bool? result = form.ShowDialog();
+                if (result.HasValue && result.Value) {
+                    selectedTopic.IsExpanded = true;
+                    finalRoundList.Unsaved = true;
+                    string[] correct = form.CorrectValues, incorrect = form.IncorrectValues;
+                    for (int i = 0; i < correct.Length; ++i) {
+                        FinalRounderChoice choice = new FinalRounderChoice(true, correct[i]);
+                        selectedTopic.Items.Add(choice);
+                    }
+                    for (int i = 0; i < incorrect.Length; ++i) {
+                        FinalRounderChoice choice = new FinalRounderChoice(false, incorrect[i]);
+                        selectedTopic.Items.Add(choice);
+                    }
+                }
             }
         }
 
