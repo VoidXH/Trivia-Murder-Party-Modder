@@ -142,7 +142,7 @@ namespace TriviaMurderPartyModder {
             if (selected is FinalRounder topic) {
                 DeselectChoice();
                 SelectFinalQuestion(topic);
-            } else {
+            } else if (selected != null) {
                 selectedChoice = (FinalRounderChoice)selected;
                 choiceCorrect.IsChecked = selectedChoice.Correct;
                 choiceAnswer.Text = selectedChoice.Text;
