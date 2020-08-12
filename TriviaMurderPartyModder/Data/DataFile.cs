@@ -29,7 +29,9 @@ namespace TriviaMurderPartyModder.Data {
                 if (opener.ShowDialog() == true) {
                     if (clear)
                         Clear();
-                    Add(FileName = opener.FileName);
+                    if (Items.Count == 0)
+                        FileName = opener.FileName;
+                    Add(opener.FileName);
                 }
                 Unsaved = !clear;
             }
