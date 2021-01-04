@@ -47,7 +47,7 @@
                     <GroupBox Grid.Column="1" Header="Selected topic" Height="135" Margin="10,35,10,0" VerticalAlignment="Top">
                         <Grid>
                             <Button Content="Add choice" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="AddTopicChoice"/>
-                            <Button Content="Add in bulk" Margin="116,10,10,0" VerticalAlignment="Top" Click="AddTopicChoices"/>
+                            <Button Content="Add in bulk..." Margin="116,10,10,0" VerticalAlignment="Top" Click="AddTopicChoices"/>
                             <Button Content="Add topic audio" Margin="0,35,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="206" Click="AddTopicAudio"/>
                             <Button Content="Remove" Margin="0,60,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Click="RemoveTopic"/>
                             <Label Content="ID:" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top"/>

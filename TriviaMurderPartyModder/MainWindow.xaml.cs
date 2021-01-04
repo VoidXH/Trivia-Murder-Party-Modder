@@ -46,9 +46,6 @@ namespace TriviaMurderPartyModder {
             worstDrawings.CellEditEnding += WorstDrawings_CellEditEnding;
         }
 
-        void LoadAudio() {
-        }
-
         void MoveRight(object sender, KeyEventArgs e) {
             if (e.Key == Key.Enter && e.OriginalSource is UIElement source) {
                 e.Handled = true;
@@ -253,7 +250,8 @@ namespace TriviaMurderPartyModder {
         }
 
         void FinalRoundImport(object sender, RoutedEventArgs e) => finalRoundList.Import(true);
-        void FinalRoundImportLastSave(object sender, RoutedEventArgs e) => finalRoundList.ImportFrom(Properties.Settings.Default.lastFinalRound);
+        void FinalRoundImportLastSave(object sender, RoutedEventArgs e) =>
+            finalRoundList.ImportFrom(Properties.Settings.Default.lastFinalRound);
         void FinalRoundMerge(object sender, RoutedEventArgs e) => finalRoundList.Import(false);
         void FinalRoundSave(object sender, RoutedEventArgs e) => finalRoundList.Save();
         void FinalRoundSaveAs(object sender, RoutedEventArgs e) => finalRoundList.SaveAs();
@@ -270,7 +268,7 @@ namespace TriviaMurderPartyModder {
                     }
                 }
                 if (finalRoundList[i].Items.Count < 3) {
-                    FinalRounders.FinalRoundIssue(string.Format("{0} has less than 3 answers.", finalRoundList[i].Text));
+                    FinalRounders.FinalRoundIssue(string.Format("{0} has less than 3 choices.", finalRoundList[i].Text));
                     return;
                 }
                 if (finalRoundList.FileName != null && !Parsing.CheckAudio(finalRoundFileDir, finalRoundList[i].ID)) {
@@ -283,7 +281,8 @@ namespace TriviaMurderPartyModder {
 
         void WorstDrawings_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => worstDrawingList.Unsaved = true;
         void WorstDrawingImport(object _, RoutedEventArgs e) => worstDrawingList.Import(true);
-        void WorstDrawingImportLastSave(object _, RoutedEventArgs e) => worstDrawingList.ImportFrom(Properties.Settings.Default.lastWorstDrawing);
+        void WorstDrawingImportLastSave(object _, RoutedEventArgs e) =>
+            worstDrawingList.ImportFrom(Properties.Settings.Default.lastWorstDrawing);
         void WorstDrawingMerge(object _, RoutedEventArgs e) => worstDrawingList.Import(false);
         void WorstDrawingSave(object _, RoutedEventArgs e) => worstDrawingList.Save();
         void WorstDrawingSaveAs(object _, RoutedEventArgs e) => worstDrawingList.SaveAs();
@@ -330,7 +329,8 @@ namespace TriviaMurderPartyModder {
 
         void WorstResponses_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => worstResponseList.Unsaved = true;
         void WorstResponseImport(object _, RoutedEventArgs e) => worstResponseList.Import(true);
-        void WorstResponseImportLastSave(object _, RoutedEventArgs e) => worstResponseList.ImportFrom(Properties.Settings.Default.lastWorstResponse);
+        void WorstResponseImportLastSave(object _, RoutedEventArgs e) =>
+            worstResponseList.ImportFrom(Properties.Settings.Default.lastWorstResponse);
         void WorstResponseMerge(object _, RoutedEventArgs e) => worstResponseList.Import(false);
         void WorstResponseSave(object _, RoutedEventArgs e) => worstResponseList.Save();
         void WorstResponseSaveAs(object _, RoutedEventArgs e) => worstResponseList.SaveAs();
