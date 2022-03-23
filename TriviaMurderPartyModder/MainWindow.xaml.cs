@@ -8,13 +8,17 @@ using System.Windows.Media;
 
 using TriviaMurderPartyModder.Data;
 using TriviaMurderPartyModder.Dialogs;
+using TriviaMurderPartyModder.Properties;
+
+using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
 
 namespace TriviaMurderPartyModder {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        readonly OpenFileDialog audioBrowser = new OpenFileDialog { Filter = "Ogg Vorbis Audio (*.ogg)|*.ogg" };
+        readonly OpenFileDialog audioBrowser = new OpenFileDialog { Filter = Properties.Resources.oggFilter };
+        readonly FolderBrowserDialog gameBrowser = new FolderBrowserDialog() { Description = Properties.Resources.selectPack };
 
         readonly Questions questionList = new Questions();
         readonly FinalRounders finalRoundList = new FinalRounders();
@@ -26,18 +30,19 @@ namespace TriviaMurderPartyModder {
 
         public MainWindow() {
             InitializeComponent();
-            string lastQuestion = Properties.Settings.Default.lastQuestion;
+            string lastQuestion = Settings.Default.lastQuestion;
             if (string.IsNullOrEmpty(lastQuestion) || !File.Exists(lastQuestion))
                 questionLast.IsEnabled = false;
-            string lastFinalRound = Properties.Settings.Default.lastFinalRound;
+            string lastFinalRound = Settings.Default.lastFinalRound;
             if (string.IsNullOrEmpty(lastFinalRound) || !File.Exists(lastFinalRound))
                 finalRoundLast.IsEnabled = false;
-            string lastWorstDrawing = Properties.Settings.Default.lastWorstDrawing;
+            string lastWorstDrawing = Settings.Default.lastWorstDrawing;
             if (string.IsNullOrEmpty(lastWorstDrawing) || !File.Exists(lastWorstDrawing))
                 worstDrawingLast.IsEnabled = false;
-            string lastWorstResponse = Properties.Settings.Default.lastWorstResponse;
+            string lastWorstResponse = Settings.Default.lastWorstResponse;
             if (string.IsNullOrEmpty(lastWorstResponse) || !File.Exists(lastWorstResponse))
                 worstResponseLast.IsEnabled = false;
+            gameBrowser.SelectedPath = Settings.Default.lastGameLocation;
             questions.ItemsSource = questionList;
             finalRounders.ItemsSource = finalRoundList;
             worstDrawings.ItemsSource = worstDrawingList;
@@ -56,17 +61,28 @@ namespace TriviaMurderPartyModder {
         void Window_Closing(object sender, CancelEventArgs e) {
             e.Cancel = !questionList.UnsavedPrompt() || !finalRoundList.UnsavedPrompt() || !worstDrawingList.UnsavedPrompt();
             if (!e.Cancel) {
-                Properties.Settings.Default.lastQuestion = questionList.FileName;
-                Properties.Settings.Default.lastFinalRound = finalRoundList.FileName;
-                Properties.Settings.Default.lastWorstDrawing = worstDrawingList.FileName;
-                Properties.Settings.Default.lastWorstResponse = worstResponseList.FileName;
-                Properties.Settings.Default.Save();
+                Settings.Default.lastQuestion = questionList.FileName;
+                Settings.Default.lastFinalRound = finalRoundList.FileName;
+                Settings.Default.lastWorstDrawing = worstDrawingList.FileName;
+                Settings.Default.lastWorstResponse = worstResponseList.FileName;
+                Settings.Default.lastGameLocation = gameBrowser.SelectedPath;
+                Settings.Default.Save();
+            }
+        }
+
+        void ImportAll(object sender, RoutedEventArgs e) {
+            if (gameBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                string directory = Path.Combine(gameBrowser.SelectedPath, "games", "TriviaDeath", "content");
+                questionList.ImportReference(directory);
+                finalRoundList.ImportReference(directory);
+                worstDrawingList.ImportReference(directory);
+                worstResponseList.ImportReference(directory);
             }
         }
 
         void Questions_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => questionList.Unsaved = true;
         void QuestionImport(object sender, RoutedEventArgs e) => questionList.Import(true);
-        void QuestionImportLastSave(object sender, RoutedEventArgs e) => questionList.ImportFrom(Properties.Settings.Default.lastQuestion);
+        void QuestionImportLastSave(object sender, RoutedEventArgs e) => questionList.ImportFrom(Settings.Default.lastQuestion);
         void QuestionMerge(object sender, RoutedEventArgs e) => questionList.Import(false);
         void QuestionSave(object sender, RoutedEventArgs e) => questionList.Save();
         void QuestionSaveAs(object sender, RoutedEventArgs e) => questionList.SaveAs();
@@ -78,16 +94,16 @@ namespace TriviaMurderPartyModder {
             for (int i = 0, end = questionList.Count; i < end; ++i) {
                 for (int j = i + 1; j < end; ++j) {
                     if (questionList[i].ID == questionList[j].ID) {
-                        Questions.QuestionIssue(string.Format("There are multiple {0} IDs.", questionList[i].ID));
+                        Questions.QuestionIssue(string.Format(Properties.Resources.multipleIDs, questionList[i].ID));
                         return;
                     }
                 }
                 if (questionList.FileName != null && !Parsing.CheckAudio(questionFileDir, questionList[i].ID)) {
-                    Questions.QuestionIssue(string.Format("Audio files are missing for question ID {0}.", questionList[i].ID));
+                    Questions.QuestionIssue(string.Format(Properties.Resources.missingAudio, questionList[i].ID));
                     return;
                 }
             }
-            MessageBox.Show("Release check successful. This question set is compatible with the game.", "Release check result");
+            MessageBox.Show(Properties.Resources.checkSuccess, Properties.Resources.checkResult);
         }
 
         string LoadQuestionAudio() {
@@ -251,7 +267,7 @@ namespace TriviaMurderPartyModder {
 
         void FinalRoundImport(object sender, RoutedEventArgs e) => finalRoundList.Import(true);
         void FinalRoundImportLastSave(object sender, RoutedEventArgs e) =>
-            finalRoundList.ImportFrom(Properties.Settings.Default.lastFinalRound);
+            finalRoundList.ImportFrom(Settings.Default.lastFinalRound);
         void FinalRoundMerge(object sender, RoutedEventArgs e) => finalRoundList.Import(false);
         void FinalRoundSave(object sender, RoutedEventArgs e) => finalRoundList.Save();
         void FinalRoundSaveAs(object sender, RoutedEventArgs e) => finalRoundList.SaveAs();
@@ -263,7 +279,7 @@ namespace TriviaMurderPartyModder {
             for (int i = 0, end = finalRoundList.Count; i < end; ++i) {
                 for (int j = i + 1; j < end; ++j) {
                     if (finalRoundList[i].ID == finalRoundList[j].ID) {
-                        FinalRounders.FinalRoundIssue(string.Format("There are multiple {0} IDs.", finalRoundList[i].ID));
+                        FinalRounders.FinalRoundIssue(string.Format(Properties.Resources.multipleIDs, finalRoundList[i].ID));
                         return;
                     }
                 }
@@ -272,17 +288,17 @@ namespace TriviaMurderPartyModder {
                     return;
                 }
                 if (finalRoundList.FileName != null && !Parsing.CheckAudio(finalRoundFileDir, finalRoundList[i].ID)) {
-                    FinalRounders.FinalRoundIssue(string.Format("Audio files are missing for topic ID {0}.", finalRoundList[i].ID));
+                    FinalRounders.FinalRoundIssue(string.Format(Properties.Resources.missingAudio, finalRoundList[i].ID));
                     return;
                 }
             }
-            MessageBox.Show("Release check successful. This topic set is compatible with the game.", "Release check result");
+            MessageBox.Show(Properties.Resources.checkSuccess, Properties.Resources.checkResult);
         }
 
         void WorstDrawings_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => worstDrawingList.Unsaved = true;
         void WorstDrawingImport(object _, RoutedEventArgs e) => worstDrawingList.Import(true);
         void WorstDrawingImportLastSave(object _, RoutedEventArgs e) =>
-            worstDrawingList.ImportFrom(Properties.Settings.Default.lastWorstDrawing);
+            worstDrawingList.ImportFrom(Settings.Default.lastWorstDrawing);
         void WorstDrawingMerge(object _, RoutedEventArgs e) => worstDrawingList.Import(false);
         void WorstDrawingSave(object _, RoutedEventArgs e) => worstDrawingList.Save();
         void WorstDrawingSaveAs(object _, RoutedEventArgs e) => worstDrawingList.SaveAs();
@@ -294,16 +310,16 @@ namespace TriviaMurderPartyModder {
             for (int i = 0, end = worstDrawingList.Count; i < end; ++i) {
                 for (int j = i + 1; j < end; ++j) {
                     if (worstDrawingList[i].ID == worstDrawingList[j].ID) {
-                        WorstDrawings.DrawingIssue(string.Format("There are multiple {0} IDs.", worstDrawingList[i].ID));
+                        WorstDrawings.DrawingIssue(string.Format(Properties.Resources.multipleIDs, worstDrawingList[i].ID));
                         return;
                     }
                 }
                 if (worstDrawingList.FileName != null && !Parsing.CheckAudio(fileDir, worstDrawingList[i].ID)) {
-                    WorstDrawings.DrawingIssue(string.Format("Audio files are missing for drawing ID {0}.", worstDrawingList[i].ID));
+                    WorstDrawings.DrawingIssue(string.Format(Properties.Resources.missingAudio, worstDrawingList[i].ID));
                     return;
                 }
             }
-            MessageBox.Show("Release check successful. This drawing set is compatible with the game.", "Release check result");
+            MessageBox.Show(Properties.Resources.checkSuccess, Properties.Resources.checkResult);
         }
 
         void WorstDrawingAudio(object sender, RoutedEventArgs e) {
@@ -330,7 +346,7 @@ namespace TriviaMurderPartyModder {
         void WorstResponses_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => worstResponseList.Unsaved = true;
         void WorstResponseImport(object _, RoutedEventArgs e) => worstResponseList.Import(true);
         void WorstResponseImportLastSave(object _, RoutedEventArgs e) =>
-            worstResponseList.ImportFrom(Properties.Settings.Default.lastWorstResponse);
+            worstResponseList.ImportFrom(Settings.Default.lastWorstResponse);
         void WorstResponseMerge(object _, RoutedEventArgs e) => worstResponseList.Import(false);
         void WorstResponseSave(object _, RoutedEventArgs e) => worstResponseList.Save();
         void WorstResponseSaveAs(object _, RoutedEventArgs e) => worstResponseList.SaveAs();
@@ -342,16 +358,16 @@ namespace TriviaMurderPartyModder {
             for (int i = 0, end = worstResponseList.Count; i < end; ++i) {
                 for (int j = i + 1; j < end; ++j) {
                     if (worstResponseList[i].ID == worstResponseList[j].ID) {
-                        WorstResponses.ResponseIssue(string.Format("There are multiple {0} IDs.", worstResponseList[i].ID));
+                        WorstResponses.ResponseIssue(string.Format(Properties.Resources.multipleIDs, worstResponseList[i].ID));
                         return;
                     }
                 }
                 if (worstResponseList.FileName != null && !Parsing.CheckAudio(fileDir, worstResponseList[i].ID)) {
-                    WorstResponses.ResponseIssue(string.Format("Audio files are missing for response ID {0}.", worstResponseList[i].ID));
+                    WorstResponses.ResponseIssue(string.Format(Properties.Resources.missingAudio, worstResponseList[i].ID));
                     return;
                 }
             }
-            MessageBox.Show("Release check successful. This response set is compatible with the game.", "Release check result");
+            MessageBox.Show(Properties.Resources.checkSuccess, Properties.Resources.checkResult);
         }
 
         void WorstResponseAudio(object sender, RoutedEventArgs e) {

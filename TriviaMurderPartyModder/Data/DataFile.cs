@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 
 namespace TriviaMurderPartyModder.Data {
@@ -11,6 +12,11 @@ namespace TriviaMurderPartyModder.Data {
 
         public bool Unsaved { get; set; }
         public string FileName { get; private set; }
+
+        /// <summary>
+        /// The default name of the game mode's file in Trivia Murder Party's folder.
+        /// </summary>
+        protected abstract string ReferenceFileName { get; }
 
         public DataFile(string items) => this.items = items;
 
@@ -43,6 +49,12 @@ namespace TriviaMurderPartyModder.Data {
             Clear();
             Add(FileName = path);
             Unsaved = false;
+        }
+
+        public void ImportReference(string contentPath) {
+            contentPath = Path.Combine(contentPath, ReferenceFileName);
+            if (File.Exists(contentPath))
+                ImportFrom(contentPath);
         }
 
         public void Save() {

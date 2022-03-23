@@ -4,6 +4,8 @@ using System.Windows;
 
 namespace TriviaMurderPartyModder.Data {
     public class WorstResponses : DataFile<WorstResponse> {
+        protected override string ReferenceFileName => "TDWorstResponse.jet";
+
         public WorstResponses() : base("drawing topics") { }
 
         protected override void Add(string fileName) {

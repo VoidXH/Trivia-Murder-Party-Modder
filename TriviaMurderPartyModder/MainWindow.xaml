@@ -129,5 +129,6 @@
                 </Grid>
             </TabItem>
         </TabControl>
+        <Button Content="Import all" Margin="0,1,1,0" Height="20" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Click="ImportAll"/>
     </Grid>
 </Window>
