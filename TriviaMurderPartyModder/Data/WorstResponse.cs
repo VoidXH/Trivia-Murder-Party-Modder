@@ -21,8 +21,8 @@
             this.question = question;
         }
 
-        public void ImportAudio(string topicFile, string audioFile) {
-            DataJet.Get(ref jet, ref topicFile, EntryType.TDWorstResponse, ID, string.Format(
+        public void ImportAudio(DataFile<WorstResponse> list, string audioFile) {
+            DataJet.Get(ref jet, list.DataFolderPath, ID, string.Format(
                 "{{\"fields\":[{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasBumperAudio\"}},{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasBumperType\"}}," +
                 "{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasCorrectAudio\"}},{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasQuestionAudio\"}}," +
                 "{{\"t\":\"S\",\"v\":\"\",\"n\":\"Suggestions\"}},{{\"t\":\"S\",\"v\":\"{0}\",\"n\":\"Category\"}}," +

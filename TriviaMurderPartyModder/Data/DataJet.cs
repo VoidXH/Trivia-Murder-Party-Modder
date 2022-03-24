@@ -23,8 +23,8 @@ namespace TriviaMurderPartyModder.Data {
         string contents;
         readonly string defaultContents;
 
-        public DataJet(string sourceFile, EntryType type, int id, string defaultContents = null) {
-            Folder = Path.Combine(Path.GetDirectoryName(sourceFile), type.ToString(), id.ToString());
+        public DataJet(string path, int id, string defaultContents = null) {
+            Folder = Path.Combine(path, id.ToString());
             this.defaultContents = defaultContents;
         }
 
@@ -72,9 +72,9 @@ namespace TriviaMurderPartyModder.Data {
             File.Copy(sourceFile, Path.Combine(Folder, defaultName + ".ogg"));
         }
 
-        public static void Get(ref DataJet jet, ref string sourceFile, EntryType type, int id, string defaultContents = null) {
+        public static void Get(ref DataJet jet, string dataFolder, int id, string defaultContents = null) {
             if (jet == null)
-                jet = new DataJet(sourceFile, type, id, defaultContents);
+                jet = new DataJet(dataFolder, id, defaultContents);
         }
     }
 }

@@ -131,6 +131,15 @@
   <data name="multipleIDs" xml:space="preserve">
     <value>There are multiple {0} IDs.</value>
   </data>
+  <data name="noAudioImportSelection" xml:space="preserve">
+    <value>Select something to which you want to import the audio.</value>
+  </data>
+  <data name="noRemovable" xml:space="preserve">
+    <value>Select something to remove.</value>
+  </data>
+  <data name="noSavedFile" xml:space="preserve">
+    <value>A saved file has to exist before importing audio. Export your work or import an existing file.</value>
+  </data>
   <data name="oggFilter" xml:space="preserve">
     <value>Ogg Vorbis Audio (*.ogg)|*.ogg</value>
   </data>

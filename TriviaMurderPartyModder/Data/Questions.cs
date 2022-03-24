@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Text;
-using System.Windows;
 
 namespace TriviaMurderPartyModder.Data {
     public class Questions : DataFile<Question> {
@@ -35,20 +34,18 @@ namespace TriviaMurderPartyModder.Data {
             }
         }
 
-        public static void QuestionIssue(string text) => MessageBox.Show(text, "Question issue", MessageBoxButton.OK, MessageBoxImage.Error);
-
         protected override bool SaveAs(string name) {
             StringBuilder output = new StringBuilder("{\"episodeid\":1244,\"content\":[");
             for (int i = 0, end = Count; i < end; ++i) {
                 Question q = this[i];
                 output.Append("{\"x\":false,\"id\":").Append(q.ID);
                 if (string.IsNullOrWhiteSpace(q.Text)) {
-                    QuestionIssue(string.Format("No text given for question ID {0}.", q.ID));
+                    Issue(string.Format("No text given for question ID {0}.", q.ID));
                     return false;
                 }
                 output.Append(",\"text\":\"").Append(Parsing.MakeTextCompatible(q.Text)).Append("\",\"pic\": false,\"choices\":[");
                 if (q.Correct < 1 || q.Correct > 4) {
-                    QuestionIssue(string.Format("No correct answer set for question \"{0}\".", q.Text));
+                    Issue(string.Format("No correct answer set for question \"{0}\".", q.Text));
                     return false;
                 }
                 for (int answer = 1; answer <= 4; ++answer) {
@@ -59,7 +56,7 @@ namespace TriviaMurderPartyModder.Data {
                     if (answer == q.Correct)
                         output.Append("\"correct\":true,");
                     if (string.IsNullOrWhiteSpace(q[answer])) {
-                        QuestionIssue(string.Format("No answer {0} for question \"{1}\".", answer, q.Text));
+                        Issue(string.Format("No answer {0} for question \"{1}\".", answer, q.Text));
                         return false;
                     }
                     output.Append("\"text\":\"").Append(Parsing.MakeTextCompatible(q[answer])).Append("\"");

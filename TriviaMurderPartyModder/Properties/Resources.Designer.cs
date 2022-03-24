@@ -97,6 +97,33 @@ namespace TriviaMurderPartyModder.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select something to which you want to import the audio..
+        /// </summary>
+        internal static string noAudioImportSelection {
+            get {
+                return ResourceManager.GetString("noAudioImportSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select something to remove..
+        /// </summary>
+        internal static string noRemovable {
+            get {
+                return ResourceManager.GetString("noRemovable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A saved file has to exist before importing audio. Export your work or import an existing file..
+        /// </summary>
+        internal static string noSavedFile {
+            get {
+                return ResourceManager.GetString("noSavedFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ogg Vorbis Audio (*.ogg)|*.ogg.
         /// </summary>
         internal static string oggFilter {

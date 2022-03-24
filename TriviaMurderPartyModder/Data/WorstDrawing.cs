@@ -21,8 +21,10 @@
             this.category = category;
         }
 
-        public void ImportAudio(string topicFile, string audioFile) {
-            DataJet.Get(ref jet, ref topicFile, EntryType.TDWorstDrawing, ID, string.Format(
+        public void ImportAudio(DataFile<WorstDrawing> list, string audioFile) {
+            if (string.IsNullOrEmpty(audioFile))
+                return;
+            DataJet.Get(ref jet, list.DataFolderPath, ID, string.Format(
                 "{{\"fields\":[{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasJokeAudio\"}},{{\"t\":\"S\",\"v\":\"{0}\",\"n\":\"QuestionText\"}}," +
                 "{{\"t\":\"S\",\"v\":\"\",\"n\":\"AlternateSpellings\"}},{{\"t\":\"A\",\"n\":\"JokeAudio\"}}]}}", Category));
             jet.SetAudioFile(AudioType.JokeAudio, audioFile);

@@ -51,26 +51,32 @@ namespace TriviaMurderPartyModder {
             worstDrawings.CellEditEnding += WorstDrawings_CellEditEnding;
         }
 
-        void MoveRight(object sender, KeyEventArgs e) {
+        void MoveRight(object _, KeyEventArgs e) {
             if (e.Key == Key.Enter && e.OriginalSource is UIElement source) {
                 e.Handled = true;
                 source.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
             }
         }
 
-        void Window_Closing(object sender, CancelEventArgs e) {
-            e.Cancel = !questionList.UnsavedPrompt() || !finalRoundList.UnsavedPrompt() || !worstDrawingList.UnsavedPrompt();
+        void Window_Closing(object _, CancelEventArgs e) {
+            e.Cancel = !questionList.UnsavedPrompt() || !finalRoundList.UnsavedPrompt() ||
+                !worstDrawingList.UnsavedPrompt() || !worstResponseList.UnsavedPrompt();
             if (!e.Cancel) {
-                Settings.Default.lastQuestion = questionList.FileName;
-                Settings.Default.lastFinalRound = finalRoundList.FileName;
-                Settings.Default.lastWorstDrawing = worstDrawingList.FileName;
-                Settings.Default.lastWorstResponse = worstResponseList.FileName;
-                Settings.Default.lastGameLocation = gameBrowser.SelectedPath;
+                if (!string.IsNullOrEmpty(questionList.FileName))
+                    Settings.Default.lastQuestion = questionList.FileName;
+                if (!string.IsNullOrEmpty(finalRoundList.FileName))
+                    Settings.Default.lastFinalRound = finalRoundList.FileName;
+                if (!string.IsNullOrEmpty(worstDrawingList.FileName))
+                    Settings.Default.lastWorstDrawing = worstDrawingList.FileName;
+                if (!string.IsNullOrEmpty(worstResponseList.FileName))
+                    Settings.Default.lastWorstResponse = worstResponseList.FileName;
+                if (!string.IsNullOrEmpty(gameBrowser.SelectedPath))
+                    Settings.Default.lastGameLocation = gameBrowser.SelectedPath;
                 Settings.Default.Save();
             }
         }
 
-        void ImportAll(object sender, RoutedEventArgs e) {
+        void ImportAll(object _, RoutedEventArgs e) {
             if (gameBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 string directory = Path.Combine(gameBrowser.SelectedPath, "games", "TriviaDeath", "content");
                 questionList.ImportReference(directory);
@@ -80,39 +86,13 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        void Questions_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => questionList.Unsaved = true;
-        void QuestionImport(object sender, RoutedEventArgs e) => questionList.Import(true);
-        void QuestionImportLastSave(object sender, RoutedEventArgs e) => questionList.ImportFrom(Settings.Default.lastQuestion);
-        void QuestionMerge(object sender, RoutedEventArgs e) => questionList.Import(false);
-        void QuestionSave(object sender, RoutedEventArgs e) => questionList.Save();
-        void QuestionSaveAs(object sender, RoutedEventArgs e) => questionList.SaveAs();
-
-        void QuestionReleaseCheck(object sender, RoutedEventArgs e) {
-            string questionFileDir = null;
-            if (questionList.FileName != null)
-                questionFileDir = Path.Combine(Path.GetDirectoryName(questionList.FileName), "TDQuestion");
-            for (int i = 0, end = questionList.Count; i < end; ++i) {
-                for (int j = i + 1; j < end; ++j) {
-                    if (questionList[i].ID == questionList[j].ID) {
-                        Questions.QuestionIssue(string.Format(Properties.Resources.multipleIDs, questionList[i].ID));
-                        return;
-                    }
-                }
-                if (questionList.FileName != null && !Parsing.CheckAudio(questionFileDir, questionList[i].ID)) {
-                    Questions.QuestionIssue(string.Format(Properties.Resources.missingAudio, questionList[i].ID));
-                    return;
-                }
-            }
-            MessageBox.Show(Properties.Resources.checkSuccess, Properties.Resources.checkResult);
-        }
-
-        string LoadQuestionAudio() {
-            if (questions.SelectedItem == null) {
-                Questions.QuestionIssue("Select the question to import the audio of.");
+        string LoadAudio<T>(DataGrid grid, DataFile<T> list) {
+            if (grid.SelectedItem == null) {
+                list.Issue(Properties.Resources.noAudioImportSelection);
                 return null;
             }
-            if (questionList.FileName == null) {
-                Questions.QuestionIssue("The question file has to exist first. Export your work or import an existing question file.");
+            if (list.FileName == null) {
+                list.Issue(Properties.Resources.noSavedFile);
                 return null;
             }
             if (audioBrowser.ShowDialog() == true)
@@ -120,23 +100,46 @@ namespace TriviaMurderPartyModder {
             return null;
         }
 
-        void ImportQuestionAudio(AudioType type) {
-            string file = LoadQuestionAudio();
-            if (file != null)
-                ((Question)questions.SelectedItem).ImportAudio(questionList.FileName, type, file);
-        }
-
-        void QuestionAudio(object sender, RoutedEventArgs e) => ImportQuestionAudio(AudioType.Q);
-
-        void QuestionIntroAudio(object sender, RoutedEventArgs e) => ImportQuestionAudio(AudioType.Intro);
-
-        void QuestionRemove(object sender, RoutedEventArgs e) {
-            if (questions.SelectedItem == null) {
-                Questions.QuestionIssue("Select the question to remove.");
+        static void RemoveElement<T>(DataGrid grid, DataFile<T> file) {
+            if (grid.SelectedItem == null) {
+                file.Issue(Properties.Resources.noRemovable);
                 return;
             }
-            questionList.Remove((Question)questions.SelectedItem);
+            file.Remove((T)grid.SelectedItem);
         }
+
+        void Questions_CellEditEnding(object _, DataGridCellEditEndingEventArgs e) => questionList.Unsaved = true;
+        void QuestionImport(object _, RoutedEventArgs e) => questionList.Import(true);
+        void QuestionImportLastSave(object _, RoutedEventArgs e) => questionList.ImportFrom(Settings.Default.lastQuestion);
+        void QuestionMerge(object _, RoutedEventArgs e) => questionList.Import(false);
+        void QuestionSave(object _, RoutedEventArgs e) => questionList.Save();
+        void QuestionSaveAs(object _, RoutedEventArgs e) => questionList.SaveAs();
+
+        void QuestionReleaseCheck(object _, RoutedEventArgs e) {
+            string questionFileDir = null;
+            if (questionList.FileName != null)
+                questionFileDir = questionList.DataFolderPath;
+            for (int i = 0, end = questionList.Count; i < end; ++i) {
+                for (int j = i + 1; j < end; ++j) {
+                    if (questionList[i].ID == questionList[j].ID) {
+                        questionList.Issue(string.Format(Properties.Resources.multipleIDs, questionList[i].ID));
+                        return;
+                    }
+                }
+                if (questionList.FileName != null && !Parsing.CheckAudio(questionFileDir, questionList[i].ID)) {
+                    questionList.Issue(string.Format(Properties.Resources.missingAudio, questionList[i].ID));
+                    return;
+                }
+            }
+            MessageBox.Show(Properties.Resources.checkSuccess, Properties.Resources.checkResult);
+        }
+
+        void ImportQuestionAudio(AudioType type) =>
+            ((Question)questions.SelectedItem).ImportAudio(questionList, type, LoadAudio(questions, questionList));
+
+        void QuestionAudio(object _, RoutedEventArgs e) => ImportQuestionAudio(AudioType.Q);
+        void QuestionIntroAudio(object _, RoutedEventArgs e) => ImportQuestionAudio(AudioType.Intro);
+        void QuestionRemove(object _, RoutedEventArgs e) => RemoveElement(questions, questionList);
 
         void SelectFinalQuestion(FinalRounder question) {
             selectedTopic = question;
@@ -163,7 +166,7 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        void AddTopic(object sender, RoutedEventArgs e) {
+        void AddTopic(object _, RoutedEventArgs e) {
             FinalRounder newTopic = new FinalRounder(0, "New topic");
             finalRoundList.Add(newTopic);
             newTopic.IsSelected = true;
@@ -171,7 +174,7 @@ namespace TriviaMurderPartyModder {
             topic.Focus();
         }
 
-        void AddTopicChoice(object sender, RoutedEventArgs e) {
+        void AddTopicChoice(object _, RoutedEventArgs e) {
             if (selectedTopic != null) {
                 FinalRounderChoice choice = new FinalRounderChoice(false, "New choice");
                 selectedTopic.Items.Add(choice);
@@ -183,7 +186,7 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        void AddTopicChoices(object sender, RoutedEventArgs e) {
+        void AddTopicChoices(object _, RoutedEventArgs e) {
             if (selectedTopic != null) {
                 BulkOption form = new BulkOption();
                 bool? result = form.ShowDialog();
@@ -203,18 +206,8 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        void AddTopicAudio(object sender, RoutedEventArgs e) {
-            if (finalRounders.SelectedItem == null) {
-                FinalRounders.FinalRoundIssue("Select the topic to import the audio of.");
-                return;
-            }
-            if (finalRoundList.FileName == null) {
-                FinalRounders.FinalRoundIssue("The final round file has to exist first. Export your work or import an existing final round file.");
-                return;
-            }
-            if (audioBrowser.ShowDialog() == true)
-                selectedTopic.ImportTopicAudio(finalRoundList.FileName, audioBrowser.FileName);
-        }
+        void AddTopicAudio(object _, RoutedEventArgs e) =>
+            selectedTopic.ImportTopicAudio(finalRoundList, LoadAudio(questions, questionList));
 
         void TopicIDChange(object sender, TextChangedEventArgs e) {
             TextBox box = (TextBox)sender;
@@ -236,7 +229,7 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        void RemoveTopic(object sender, RoutedEventArgs e) {
+        void RemoveTopic(object _, RoutedEventArgs e) {
             if (selectedTopic != null) {
                 DeselectChoice();
                 finalRoundList.Remove(selectedTopic);
@@ -257,7 +250,7 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        void RemoveChoice(object sender, RoutedEventArgs e) {
+        void RemoveChoice(object _, RoutedEventArgs e) {
             if (selectedChoice != null) {
                 selectedTopic.Items.Remove(selectedChoice);
                 DeselectChoice();
@@ -265,17 +258,17 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        void FinalRoundImport(object sender, RoutedEventArgs e) => finalRoundList.Import(true);
-        void FinalRoundImportLastSave(object sender, RoutedEventArgs e) =>
+        void FinalRoundImport(object _, RoutedEventArgs e) => finalRoundList.Import(true);
+        void FinalRoundImportLastSave(object _, RoutedEventArgs e) =>
             finalRoundList.ImportFrom(Settings.Default.lastFinalRound);
-        void FinalRoundMerge(object sender, RoutedEventArgs e) => finalRoundList.Import(false);
-        void FinalRoundSave(object sender, RoutedEventArgs e) => finalRoundList.Save();
-        void FinalRoundSaveAs(object sender, RoutedEventArgs e) => finalRoundList.SaveAs();
+        void FinalRoundMerge(object _, RoutedEventArgs e) => finalRoundList.Import(false);
+        void FinalRoundSave(object _, RoutedEventArgs e) => finalRoundList.Save();
+        void FinalRoundSaveAs(object _, RoutedEventArgs e) => finalRoundList.SaveAs();
 
-        void FinalRoundReleaseCheck(object sender, RoutedEventArgs e) {
+        void FinalRoundReleaseCheck(object _, RoutedEventArgs e) {
             string finalRoundFileDir = null;
             if (finalRoundList.FileName != null)
-                finalRoundFileDir = Path.Combine(Path.GetDirectoryName(finalRoundList.FileName), "TDFinalRound");
+                finalRoundFileDir = finalRoundList.DataFolderPath;
             for (int i = 0, end = finalRoundList.Count; i < end; ++i) {
                 for (int j = i + 1; j < end; ++j) {
                     if (finalRoundList[i].ID == finalRoundList[j].ID) {
@@ -295,7 +288,7 @@ namespace TriviaMurderPartyModder {
             MessageBox.Show(Properties.Resources.checkSuccess, Properties.Resources.checkResult);
         }
 
-        void WorstDrawings_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => worstDrawingList.Unsaved = true;
+        void WorstDrawings_CellEditEnding(object _, DataGridCellEditEndingEventArgs e) => worstDrawingList.Unsaved = true;
         void WorstDrawingImport(object _, RoutedEventArgs e) => worstDrawingList.Import(true);
         void WorstDrawingImportLastSave(object _, RoutedEventArgs e) =>
             worstDrawingList.ImportFrom(Settings.Default.lastWorstDrawing);
@@ -303,10 +296,10 @@ namespace TriviaMurderPartyModder {
         void WorstDrawingSave(object _, RoutedEventArgs e) => worstDrawingList.Save();
         void WorstDrawingSaveAs(object _, RoutedEventArgs e) => worstDrawingList.SaveAs();
 
-        void WorstDrawingReleaseCheck(object sender, RoutedEventArgs e) {
+        void WorstDrawingReleaseCheck(object _, RoutedEventArgs e) {
             string fileDir = null;
             if (worstDrawingList.FileName != null)
-                fileDir = Path.Combine(Path.GetDirectoryName(worstDrawingList.FileName), "TDWorstDrawing");
+                fileDir = worstDrawingList.DataFolderPath;
             for (int i = 0, end = worstDrawingList.Count; i < end; ++i) {
                 for (int j = i + 1; j < end; ++j) {
                     if (worstDrawingList[i].ID == worstDrawingList[j].ID) {
@@ -322,28 +315,11 @@ namespace TriviaMurderPartyModder {
             MessageBox.Show(Properties.Resources.checkSuccess, Properties.Resources.checkResult);
         }
 
-        void WorstDrawingAudio(object sender, RoutedEventArgs e) {
-            if (worstDrawings.SelectedItem == null) {
-                WorstDrawings.DrawingIssue("Select the drawing to import the audio of.");
-                return;
-            }
-            if (worstDrawingList.FileName == null) {
-                WorstDrawings.DrawingIssue("The drawings file has to exist first. Export your work or import an existing drawings file.");
-                return;
-            }
-            if (audioBrowser.ShowDialog() == true)
-                ((WorstDrawing)worstDrawings.SelectedItem).ImportAudio(worstDrawingList.FileName, audioBrowser.FileName);
-        }
+        void WorstDrawingAudio(object _, RoutedEventArgs e) =>
+            ((WorstDrawing)worstDrawings.SelectedItem).ImportAudio(worstDrawingList, LoadAudio(questions, questionList));
+        void WorstDrawingRemove(object _, RoutedEventArgs e) => RemoveElement(worstDrawings, worstDrawingList);
 
-        void WorstDrawingRemove(object sender, RoutedEventArgs e) {
-            if (worstDrawings.SelectedItem == null) {
-                WorstDrawings.DrawingIssue("Select the drawing to remove.");
-                return;
-            }
-            worstDrawingList.Remove((WorstDrawing)worstDrawings.SelectedItem);
-        }
-
-        void WorstResponses_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) => worstResponseList.Unsaved = true;
+        void WorstResponses_CellEditEnding(object _, DataGridCellEditEndingEventArgs e) => worstResponseList.Unsaved = true;
         void WorstResponseImport(object _, RoutedEventArgs e) => worstResponseList.Import(true);
         void WorstResponseImportLastSave(object _, RoutedEventArgs e) =>
             worstResponseList.ImportFrom(Settings.Default.lastWorstResponse);
@@ -351,10 +327,10 @@ namespace TriviaMurderPartyModder {
         void WorstResponseSave(object _, RoutedEventArgs e) => worstResponseList.Save();
         void WorstResponseSaveAs(object _, RoutedEventArgs e) => worstResponseList.SaveAs();
 
-        void WorstResponseReleaseCheck(object sender, RoutedEventArgs e) {
+        void WorstResponseReleaseCheck(object _, RoutedEventArgs e) {
             string fileDir = null;
             if (worstResponseList.FileName != null)
-                fileDir = Path.Combine(Path.GetDirectoryName(worstResponseList.FileName), "TDWorstResponse");
+                fileDir = worstResponseList.DataFolderPath;
             for (int i = 0, end = worstResponseList.Count; i < end; ++i) {
                 for (int j = i + 1; j < end; ++j) {
                     if (worstResponseList[i].ID == worstResponseList[j].ID) {
@@ -370,25 +346,8 @@ namespace TriviaMurderPartyModder {
             MessageBox.Show(Properties.Resources.checkSuccess, Properties.Resources.checkResult);
         }
 
-        void WorstResponseAudio(object sender, RoutedEventArgs e) {
-            if (worstResponses.SelectedItem == null) {
-                WorstResponses.ResponseIssue("Select the response to import the audio of.");
-                return;
-            }
-            if (worstResponseList.FileName == null) {
-                WorstResponses.ResponseIssue("The response file has to exist first. Export your work or import an existing response file.");
-                return;
-            }
-            if (audioBrowser.ShowDialog() == true)
-                ((WorstResponse)worstResponses.SelectedItem).ImportAudio(worstResponseList.FileName, audioBrowser.FileName);
-        }
-
-        void WorstResponseRemove(object sender, RoutedEventArgs e) {
-            if (worstResponses.SelectedItem == null) {
-                WorstResponses.ResponseIssue("Select the response to remove.");
-                return;
-            }
-            worstResponseList.Remove((WorstResponse)worstResponses.SelectedItem);
-        }
+        void WorstResponseAudio(object _, RoutedEventArgs e) =>
+            ((WorstResponse)worstResponses.SelectedItem).ImportAudio(worstResponseList, LoadAudio(questions, questionList));
+        void WorstResponseRemove(object _, RoutedEventArgs e) => RemoveElement(worstResponses, worstResponseList);
     }
 }

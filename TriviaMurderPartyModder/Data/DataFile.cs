@@ -13,6 +13,8 @@ namespace TriviaMurderPartyModder.Data {
         public bool Unsaved { get; set; }
         public string FileName { get; private set; }
 
+        public string DataFolderPath => FileName.Substring(0, FileName.LastIndexOf('.'));
+
         /// <summary>
         /// The default name of the game mode's file in Trivia Murder Party's folder.
         /// </summary>
@@ -23,10 +25,13 @@ namespace TriviaMurderPartyModder.Data {
         protected abstract void Add(string fileName);
         protected abstract bool SaveAs(string name);
 
+        public void Issue(string text) =>
+            MessageBox.Show(text, string.Format("Issue with {0}", items), MessageBoxButton.OK, MessageBoxImage.Error);
+
         public bool UnsavedPrompt() {
             if (Unsaved)
-                return MessageBox.Show(string.Format("You have unsaved {0}. Do you want to discard them?", items), "Unsaved " + items,
-                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+                return MessageBox.Show(string.Format("You have unsaved {0}. Do you want to discard them?", items),
+                    "Unsaved " + items, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
             return true;
         }
 

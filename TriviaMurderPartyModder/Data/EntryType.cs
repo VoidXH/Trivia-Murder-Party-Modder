@@ -1,11 +1,4 @@
 ﻿namespace TriviaMurderPartyModder.Data {
-    public enum EntryType {
-        TDQuestion,
-        TDFinalRound,
-        TDWorstDrawing,
-        TDWorstResponse
-    }
-
     public enum AudioType {
         /// <summary>
         /// Used for questions and final round.
