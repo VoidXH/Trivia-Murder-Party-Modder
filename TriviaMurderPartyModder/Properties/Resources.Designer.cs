@@ -124,6 +124,15 @@ namespace TriviaMurderPartyModder.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A saved file has to exist before a release check. Export your work or import an existing file..
+        /// </summary>
+        internal static string noSavedFileRC {
+            get {
+                return ResourceManager.GetString("noSavedFileRC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ogg Vorbis Audio (*.ogg)|*.ogg.
         /// </summary>
         internal static string oggFilter {

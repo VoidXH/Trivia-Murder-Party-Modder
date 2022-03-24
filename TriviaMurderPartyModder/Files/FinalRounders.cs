@@ -2,7 +2,9 @@
 using System.Text;
 using System.Windows;
 
-namespace TriviaMurderPartyModder.Data {
+using TriviaMurderPartyModder.Data;
+
+namespace TriviaMurderPartyModder.Files {
     public class FinalRounders : DataFile<FinalRounder> {
         protected override string ReferenceFileName => "TDFinalRound.jet";
 

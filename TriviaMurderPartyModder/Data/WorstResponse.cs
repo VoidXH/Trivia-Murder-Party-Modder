@@ -1,7 +1,5 @@
 ﻿namespace TriviaMurderPartyModder.Data {
-    public class WorstResponse {
-        public int ID { get; set; }
-
+    public class WorstResponse : Entry {
         public string Question {
             get => question;
             set {
@@ -21,8 +19,8 @@
             this.question = question;
         }
 
-        public void ImportAudio(DataFile<WorstResponse> list, string audioFile) {
-            DataJet.Get(ref jet, list.DataFolderPath, ID, string.Format(
+        public void ImportAudio(string dataFolder, string audioFile) {
+            DataJet.Get(ref jet, dataFolder, ID, string.Format(
                 "{{\"fields\":[{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasBumperAudio\"}},{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasBumperType\"}}," +
                 "{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasCorrectAudio\"}},{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasQuestionAudio\"}}," +
                 "{{\"t\":\"S\",\"v\":\"\",\"n\":\"Suggestions\"}},{{\"t\":\"S\",\"v\":\"{0}\",\"n\":\"Category\"}}," +

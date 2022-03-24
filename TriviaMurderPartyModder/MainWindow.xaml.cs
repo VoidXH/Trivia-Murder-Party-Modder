@@ -8,6 +8,7 @@ using System.Windows.Media;
 
 using TriviaMurderPartyModder.Data;
 using TriviaMurderPartyModder.Dialogs;
+using TriviaMurderPartyModder.Files;
 using TriviaMurderPartyModder.Properties;
 
 using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
@@ -108,26 +109,18 @@ namespace TriviaMurderPartyModder {
             file.Remove((T)grid.SelectedItem);
         }
 
-        void Questions_CellEditEnding(object _, DataGridCellEditEndingEventArgs e) => questionList.Unsaved = true;
-        void QuestionImport(object _, RoutedEventArgs e) => questionList.Import(true);
-        void QuestionImportLastSave(object _, RoutedEventArgs e) => questionList.ImportFrom(Settings.Default.lastQuestion);
-        void QuestionMerge(object _, RoutedEventArgs e) => questionList.Import(false);
-        void QuestionSave(object _, RoutedEventArgs e) => questionList.Save();
-        void QuestionSaveAs(object _, RoutedEventArgs e) => questionList.SaveAs();
-
-        void QuestionReleaseCheck(object _, RoutedEventArgs e) {
-            string questionFileDir = null;
-            if (questionList.FileName != null)
-                questionFileDir = questionList.DataFolderPath;
-            for (int i = 0, end = questionList.Count; i < end; ++i) {
+        static void ReleaseCheck<T>(DataFile<T> list) where T : Entry {
+            if (list.FileName == null)
+                list.Issue(Properties.Resources.noSavedFileRC);
+            for (int i = 0, end = list.Count; i < end; ++i) {
                 for (int j = i + 1; j < end; ++j) {
-                    if (questionList[i].ID == questionList[j].ID) {
-                        questionList.Issue(string.Format(Properties.Resources.multipleIDs, questionList[i].ID));
+                    if (list[i].ID == list[j].ID) {
+                        list.Issue(string.Format(Properties.Resources.multipleIDs, list[i].ID));
                         return;
                     }
                 }
-                if (questionList.FileName != null && !Parsing.CheckAudio(questionFileDir, questionList[i].ID)) {
-                    questionList.Issue(string.Format(Properties.Resources.missingAudio, questionList[i].ID));
+                if (!Parsing.CheckAudio(list.DataFolderPath, list[i].ID)) {
+                    list.Issue(string.Format(Properties.Resources.missingAudio, list[i].ID));
                     return;
                 }
             }
@@ -135,8 +128,15 @@ namespace TriviaMurderPartyModder {
         }
 
         void ImportQuestionAudio(AudioType type) =>
-            ((Question)questions.SelectedItem).ImportAudio(questionList, type, LoadAudio(questions, questionList));
+            ((Question)questions.SelectedItem).ImportAudio(questionList.DataFolderPath, type, LoadAudio(questions, questionList));
 
+        void Questions_CellEditEnding(object _, DataGridCellEditEndingEventArgs e) => questionList.Unsaved = true;
+        void QuestionImport(object _, RoutedEventArgs e) => questionList.Import(true);
+        void QuestionImportLastSave(object _, RoutedEventArgs e) => questionList.ImportFrom(Settings.Default.lastQuestion);
+        void QuestionMerge(object _, RoutedEventArgs e) => questionList.Import(false);
+        void QuestionSave(object _, RoutedEventArgs e) => questionList.Save();
+        void QuestionSaveAs(object _, RoutedEventArgs e) => questionList.SaveAs();
+        void QuestionReleaseCheck(object _, RoutedEventArgs e) => ReleaseCheck(questionList);
         void QuestionAudio(object _, RoutedEventArgs e) => ImportQuestionAudio(AudioType.Q);
         void QuestionIntroAudio(object _, RoutedEventArgs e) => ImportQuestionAudio(AudioType.Intro);
         void QuestionRemove(object _, RoutedEventArgs e) => RemoveElement(questions, questionList);
@@ -207,7 +207,7 @@ namespace TriviaMurderPartyModder {
         }
 
         void AddTopicAudio(object _, RoutedEventArgs e) =>
-            selectedTopic.ImportTopicAudio(finalRoundList, LoadAudio(questions, questionList));
+            selectedTopic.ImportTopicAudio(finalRoundList.DataFolderPath, LoadAudio(questions, questionList));
 
         void TopicIDChange(object sender, TextChangedEventArgs e) {
             TextBox box = (TextBox)sender;
@@ -295,28 +295,10 @@ namespace TriviaMurderPartyModder {
         void WorstDrawingMerge(object _, RoutedEventArgs e) => worstDrawingList.Import(false);
         void WorstDrawingSave(object _, RoutedEventArgs e) => worstDrawingList.Save();
         void WorstDrawingSaveAs(object _, RoutedEventArgs e) => worstDrawingList.SaveAs();
-
-        void WorstDrawingReleaseCheck(object _, RoutedEventArgs e) {
-            string fileDir = null;
-            if (worstDrawingList.FileName != null)
-                fileDir = worstDrawingList.DataFolderPath;
-            for (int i = 0, end = worstDrawingList.Count; i < end; ++i) {
-                for (int j = i + 1; j < end; ++j) {
-                    if (worstDrawingList[i].ID == worstDrawingList[j].ID) {
-                        WorstDrawings.DrawingIssue(string.Format(Properties.Resources.multipleIDs, worstDrawingList[i].ID));
-                        return;
-                    }
-                }
-                if (worstDrawingList.FileName != null && !Parsing.CheckAudio(fileDir, worstDrawingList[i].ID)) {
-                    WorstDrawings.DrawingIssue(string.Format(Properties.Resources.missingAudio, worstDrawingList[i].ID));
-                    return;
-                }
-            }
-            MessageBox.Show(Properties.Resources.checkSuccess, Properties.Resources.checkResult);
-        }
-
+        void WorstDrawingReleaseCheck(object _, RoutedEventArgs e) => ReleaseCheck(worstDrawingList);
         void WorstDrawingAudio(object _, RoutedEventArgs e) =>
-            ((WorstDrawing)worstDrawings.SelectedItem).ImportAudio(worstDrawingList, LoadAudio(questions, questionList));
+            ((WorstDrawing)worstDrawings.SelectedItem).ImportAudio(worstDrawingList.DataFolderPath,
+                LoadAudio(questions, questionList));
         void WorstDrawingRemove(object _, RoutedEventArgs e) => RemoveElement(worstDrawings, worstDrawingList);
 
         void WorstResponses_CellEditEnding(object _, DataGridCellEditEndingEventArgs e) => worstResponseList.Unsaved = true;
@@ -326,28 +308,10 @@ namespace TriviaMurderPartyModder {
         void WorstResponseMerge(object _, RoutedEventArgs e) => worstResponseList.Import(false);
         void WorstResponseSave(object _, RoutedEventArgs e) => worstResponseList.Save();
         void WorstResponseSaveAs(object _, RoutedEventArgs e) => worstResponseList.SaveAs();
-
-        void WorstResponseReleaseCheck(object _, RoutedEventArgs e) {
-            string fileDir = null;
-            if (worstResponseList.FileName != null)
-                fileDir = worstResponseList.DataFolderPath;
-            for (int i = 0, end = worstResponseList.Count; i < end; ++i) {
-                for (int j = i + 1; j < end; ++j) {
-                    if (worstResponseList[i].ID == worstResponseList[j].ID) {
-                        WorstResponses.ResponseIssue(string.Format(Properties.Resources.multipleIDs, worstResponseList[i].ID));
-                        return;
-                    }
-                }
-                if (worstResponseList.FileName != null && !Parsing.CheckAudio(fileDir, worstResponseList[i].ID)) {
-                    WorstResponses.ResponseIssue(string.Format(Properties.Resources.missingAudio, worstResponseList[i].ID));
-                    return;
-                }
-            }
-            MessageBox.Show(Properties.Resources.checkSuccess, Properties.Resources.checkResult);
-        }
-
+        void WorstResponseReleaseCheck(object _, RoutedEventArgs e) => ReleaseCheck(worstResponseList);
         void WorstResponseAudio(object _, RoutedEventArgs e) =>
-            ((WorstResponse)worstResponses.SelectedItem).ImportAudio(worstResponseList, LoadAudio(questions, questionList));
+            ((WorstResponse)worstResponses.SelectedItem).ImportAudio(worstResponseList.DataFolderPath,
+                LoadAudio(questions, questionList));
         void WorstResponseRemove(object _, RoutedEventArgs e) => RemoveElement(worstResponses, worstResponseList);
     }
 }

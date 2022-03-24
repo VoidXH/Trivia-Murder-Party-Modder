@@ -1,14 +1,12 @@
 ﻿using System;
 
 namespace TriviaMurderPartyModder.Data {
-    public class Question {
+    public class Question : Entry {
         const string defaultJet =
             "{\"fields\":[{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasIntro\"},{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasPic\"}," +
             "{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasVamp\"},{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasChoices\"}," +
             "{\"t\":\"A\",\"n\":\"Q\"},{\"t\":\"A\",\"n\":\"Intro\"},{\"t\":\"A\",\"n\":\"Choices\"}," +
             "{\"t\":\"A\",\"n\":\"Vamp\"},{\"t\":\"G\",\"n\":\"Pic\"}]}";
-
-        public int ID { get; set; }
 
         public string Text { get; set; }
 
@@ -59,8 +57,8 @@ namespace TriviaMurderPartyModder.Data {
 
         DataJet jet;
 
-        public void ImportAudio(DataFile<Question> list, AudioType type, string audioFile) {
-            DataJet.Get(ref jet, list.DataFolderPath, ID, defaultJet);
+        public void ImportAudio(string dataFolder, AudioType type, string audioFile) {
+            DataJet.Get(ref jet, dataFolder, ID, defaultJet);
             jet.SetAudioFile(type, audioFile);
         }
     }

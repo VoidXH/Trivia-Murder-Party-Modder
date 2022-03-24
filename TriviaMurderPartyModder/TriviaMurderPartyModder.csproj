@@ -71,19 +71,20 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Data\DataFile.cs" />
+    <Compile Include="Data\Entry.cs" />
+    <Compile Include="Files\DataFile.cs" />
     <Compile Include="Data\DataJet.cs" />
-    <Compile Include="Data\EntryType.cs" />
+    <Compile Include="Data\AudioType.cs" />
     <Compile Include="Data\FinalRounder.cs" />
     <Compile Include="Data\FinalRounderChoice.cs" />
-    <Compile Include="Data\FinalRounders.cs" />
+    <Compile Include="Files\FinalRounders.cs" />
     <Compile Include="Data\Parsing.cs" />
     <Compile Include="Data\Question.cs" />
-    <Compile Include="Data\Questions.cs" />
+    <Compile Include="Files\Questions.cs" />
     <Compile Include="Data\WorstDrawing.cs" />
-    <Compile Include="Data\WorstDrawings.cs" />
+    <Compile Include="Files\WorstDrawings.cs" />
     <Compile Include="Data\WorstResponse.cs" />
-    <Compile Include="Data\WorstResponses.cs" />
+    <Compile Include="Files\WorstResponses.cs" />
     <Compile Include="Dialogs\BulkOption.xaml.cs">
       <DependentUpon>BulkOption.xaml</DependentUpon>
     </Compile>

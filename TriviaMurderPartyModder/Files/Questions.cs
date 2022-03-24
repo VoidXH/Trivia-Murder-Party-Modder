@@ -1,7 +1,9 @@
 ﻿using System.IO;
 using System.Text;
 
-namespace TriviaMurderPartyModder.Data {
+using TriviaMurderPartyModder.Data;
+
+namespace TriviaMurderPartyModder.Files {
     public class Questions : DataFile<Question> {
         protected override string ReferenceFileName => "TDQuestion.jet";
 

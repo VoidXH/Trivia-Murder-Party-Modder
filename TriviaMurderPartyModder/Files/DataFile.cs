@@ -3,7 +3,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 
-namespace TriviaMurderPartyModder.Data {
+using TriviaMurderPartyModder.Data;
+
+namespace TriviaMurderPartyModder.Files {
     public abstract class DataFile<T> : ObservableCollection<T> {
         static readonly OpenFileDialog opener = new OpenFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
         static readonly SaveFileDialog saver = new SaveFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };

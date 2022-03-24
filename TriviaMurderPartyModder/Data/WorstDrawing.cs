@@ -1,6 +1,5 @@
 ﻿namespace TriviaMurderPartyModder.Data {
-    public class WorstDrawing {
-        public int ID { get; set; }
+    public class WorstDrawing : Entry {
 
         public string Category {
             get => category;
@@ -21,10 +20,10 @@
             this.category = category;
         }
 
-        public void ImportAudio(DataFile<WorstDrawing> list, string audioFile) {
+        public void ImportAudio(string dataFolder, string audioFile) {
             if (string.IsNullOrEmpty(audioFile))
                 return;
-            DataJet.Get(ref jet, list.DataFolderPath, ID, string.Format(
+            DataJet.Get(ref jet, dataFolder, ID, string.Format(
                 "{{\"fields\":[{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasJokeAudio\"}},{{\"t\":\"S\",\"v\":\"{0}\",\"n\":\"QuestionText\"}}," +
                 "{{\"t\":\"S\",\"v\":\"\",\"n\":\"AlternateSpellings\"}},{{\"t\":\"A\",\"n\":\"JokeAudio\"}}]}}", Category));
             jet.SetAudioFile(AudioType.JokeAudio, audioFile);
