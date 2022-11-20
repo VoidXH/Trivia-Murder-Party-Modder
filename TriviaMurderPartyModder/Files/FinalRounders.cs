@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 
@@ -43,6 +44,12 @@ namespace TriviaMurderPartyModder.Files {
             MessageBox.Show(text, "Final round issue", MessageBoxButton.OK, MessageBoxImage.Error);
 
         protected override bool SaveAs(string name) {
+            FinalRounder[] ordered = this.OrderBy(x => x.ID).ToArray();
+            Clear();
+            for (int i = 0; i < ordered.Length; i++) {
+                Add(ordered[i]);
+            }
+
             StringBuilder output = new StringBuilder("{\"episodeid\":1253,\"content\":[");
             for (int i = 0, end = Count; i < end; ++i) {
                 FinalRounder q = this[i];

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 
@@ -28,6 +29,12 @@ namespace TriviaMurderPartyModder.Files {
         public static void DrawingIssue(string text) => MessageBox.Show(text, "Drawing issue", MessageBoxButton.OK, MessageBoxImage.Error);
 
         protected override bool SaveAs(string name) {
+            WorstDrawing[] ordered = this.OrderBy(x => x.ID).ToArray();
+            Clear();
+            for (int i = 0; i < ordered.Length; i++) {
+                Add(ordered[i]);
+            }
+
             StringBuilder output = new StringBuilder("{\"content\":[{");
             for (int i = 0, end = Count; i < end; ++i) {
                 WorstDrawing wd = this[i];

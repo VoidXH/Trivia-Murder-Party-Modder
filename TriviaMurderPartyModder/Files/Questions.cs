@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 
 using TriviaMurderPartyModder.Data;
@@ -37,8 +38,14 @@ namespace TriviaMurderPartyModder.Files {
         }
 
         protected override bool SaveAs(string name) {
+            Question[] ordered = this.OrderBy(x => x.ID).ToArray();
+            Clear();
+            for (int i = 0; i < ordered.Length; i++) {
+                Add(ordered[i]);
+            }
+
             StringBuilder output = new StringBuilder("{\"episodeid\":1244,\"content\":[");
-            for (int i = 0, end = Count; i < end; ++i) {
+            for (int i = 0, end = Count; i < end; i++) {
                 Question q = this[i];
                 output.Append("{\"x\":false,\"id\":").Append(q.ID);
                 if (string.IsNullOrWhiteSpace(q.Text)) {
@@ -50,7 +57,7 @@ namespace TriviaMurderPartyModder.Files {
                     Issue(string.Format("No correct answer set for question \"{0}\".", q.Text));
                     return false;
                 }
-                for (int answer = 1; answer <= 4; ++answer) {
+                for (int answer = 1; answer <= 4; answer++) {
                     if (answer != 1)
                         output.Append("},{");
                     else
