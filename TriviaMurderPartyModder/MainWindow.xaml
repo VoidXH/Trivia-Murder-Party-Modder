@@ -16,7 +16,7 @@
                     </Grid.ColumnDefinitions>
                     <DataGrid x:Name="questions" IsManipulationEnabled="True" PreviewKeyDown="MoveRight">
                     </DataGrid>
-                    <GroupBox Grid.Column="1" Header="Data" Height="185" Margin="10,10,10,0" VerticalAlignment="Top">
+                    <GroupBox Grid.Column="1" Header="Data" Height="210" Margin="10,10,10,0" VerticalAlignment="Top">
                         <Grid>
                             <Button Content="Import" Margin="10,10,10,0" VerticalAlignment="Top" Click="QuestionImport"/>
                             <Button x:Name="questionLast" Content="Import last save" Margin="10,35,10,0" VerticalAlignment="Top" Click="QuestionImportLastSave"/>
@@ -24,9 +24,11 @@
                             <Button Content="Save" Margin="10,85,10,0" VerticalAlignment="Top" Click="QuestionSave"/>
                             <Button Content="Save As..." Margin="10,110,10,0" VerticalAlignment="Top" Click="QuestionSaveAs"/>
                             <Button Content="Release Check" Margin="10,135,10,0" VerticalAlignment="Top" Click="QuestionReleaseCheck"/>
+                            <Button Content="Equalize" Margin="10,160,10,0" VerticalAlignment="Top" Click="QuestionEqualize"
+                                    ToolTip="Make answers in different positions equally likely."/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Selected question" Height="170" Margin="10,195,10,0" VerticalAlignment="Top">
+                    <GroupBox Grid.Column="1" Header="Selected question" Height="170" Margin="10,220,10,0" VerticalAlignment="Top">
                         <Grid>
                             <GroupBox Header="Audio" Height="110" Margin="5,0,5,0" VerticalAlignment="Top">
                                 <Grid>

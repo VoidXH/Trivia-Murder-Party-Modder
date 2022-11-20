@@ -140,6 +140,7 @@ namespace TriviaMurderPartyModder {
         void QuestionSave(object _, RoutedEventArgs e) => questionList.Save();
         void QuestionSaveAs(object _, RoutedEventArgs e) => questionList.SaveAs();
         void QuestionReleaseCheck(object _, RoutedEventArgs e) => ReleaseCheck(questionList);
+        void QuestionEqualize(object _, RoutedEventArgs e) => questionList.Equalize();
         void QuestionAudio(object _, RoutedEventArgs e) => ImportQuestionAudio(AudioType.Q);
         void QuestionIntroAudio(object _, RoutedEventArgs e) => ImportQuestionAudio(AudioType.Intro);
         void RemoveIntroAudio(object _, RoutedEventArgs e) => RemoveQuestionAudio(AudioType.Intro);

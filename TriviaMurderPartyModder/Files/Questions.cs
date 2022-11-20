@@ -10,6 +10,28 @@ namespace TriviaMurderPartyModder.Files {
 
         public Questions() : base("questions") { }
 
+        public void Equalize() {
+            bool wasChange = false;
+            for (int i = 0, c = Count; i < c; i++) {
+                int shouldBeCorrect = i % 4 + 1;
+                Question item = Items[i];
+                if (item.Correct != shouldBeCorrect) {
+                    (item[item.Correct], item[shouldBeCorrect]) = (item[shouldBeCorrect], item[item.Correct]);
+                    item.Correct = shouldBeCorrect;
+                    wasChange = true;
+                }
+            }
+
+            // OnCollectionChanged
+            if (wasChange) {
+                Question[] changeds = this.ToArray();
+                Clear();
+                for (int i = 0; i < changeds.Length; i++) {
+                    Add(changeds[i]);
+                }
+            }
+        }
+
         protected override void Add(string fileName) {
             string contents = File.ReadAllText(fileName);
             int position = 0;
