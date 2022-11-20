@@ -20,6 +20,9 @@
         }
 
         public void ImportAudio(string dataFolder, string audioFile) {
+            if (audioFile == null) {
+                return;
+            }
             DataJet.Get(ref jet, dataFolder, ID, string.Format(
                 "{{\"fields\":[{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasBumperAudio\"}},{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasBumperType\"}}," +
                 "{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasCorrectAudio\"}},{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasQuestionAudio\"}}," +

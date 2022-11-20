@@ -3,8 +3,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 
-using TriviaMurderPartyModder.Data;
-
 namespace TriviaMurderPartyModder.Files {
     public abstract class DataFile<T> : ObservableCollection<T> {
         static readonly OpenFileDialog opener = new OpenFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };

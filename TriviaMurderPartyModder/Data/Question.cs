@@ -58,8 +58,16 @@ namespace TriviaMurderPartyModder.Data {
         DataJet jet;
 
         public void ImportAudio(string dataFolder, AudioType type, string audioFile) {
+            if (audioFile == null) {
+                return;
+            }
             DataJet.Get(ref jet, dataFolder, ID, defaultJet);
             jet.SetAudioFile(type, audioFile);
+        }
+
+        public void RemoveAudio(string dataFolder, AudioType type) {
+            DataJet.Get(ref jet, dataFolder, ID, defaultJet);
+            jet.RemoveAudioFile(type);
         }
     }
 }

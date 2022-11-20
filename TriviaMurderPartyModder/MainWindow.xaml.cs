@@ -130,6 +130,9 @@ namespace TriviaMurderPartyModder {
         void ImportQuestionAudio(AudioType type) =>
             ((Question)questions.SelectedItem).ImportAudio(questionList.DataFolderPath, type, LoadAudio(questions, questionList));
 
+        void RemoveQuestionAudio(AudioType type) =>
+            ((Question)questions.SelectedItem).RemoveAudio(questionList.DataFolderPath, type);
+
         void Questions_CellEditEnding(object _, DataGridCellEditEndingEventArgs e) => questionList.Unsaved = true;
         void QuestionImport(object _, RoutedEventArgs e) => questionList.Import(true);
         void QuestionImportLastSave(object _, RoutedEventArgs e) => questionList.ImportFrom(Settings.Default.lastQuestion);
@@ -139,6 +142,7 @@ namespace TriviaMurderPartyModder {
         void QuestionReleaseCheck(object _, RoutedEventArgs e) => ReleaseCheck(questionList);
         void QuestionAudio(object _, RoutedEventArgs e) => ImportQuestionAudio(AudioType.Q);
         void QuestionIntroAudio(object _, RoutedEventArgs e) => ImportQuestionAudio(AudioType.Intro);
+        void RemoveIntroAudio(object _, RoutedEventArgs e) => RemoveQuestionAudio(AudioType.Intro);
         void QuestionRemove(object _, RoutedEventArgs e) => RemoveElement(questions, questionList);
 
         void SelectFinalQuestion(FinalRounder question) {

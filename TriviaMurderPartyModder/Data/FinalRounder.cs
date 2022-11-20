@@ -28,6 +28,9 @@ namespace TriviaMurderPartyModder.Data {
         DataJet jet;
 
         public void ImportTopicAudio(string dataFolder, string audioFile) {
+            if (audioFile == null) {
+                return;
+            }
             DataJet.Get(ref jet, dataFolder, id,
                 "{\"fields\":[{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasQ\"},{\"t\":\"A\",\"n\":\"Q\"}]}");
             jet.SetAudioFile(AudioType.Q, audioFile);

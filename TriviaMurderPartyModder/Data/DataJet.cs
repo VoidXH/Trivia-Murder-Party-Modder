@@ -41,7 +41,7 @@ namespace TriviaMurderPartyModder.Data {
         }
 
         void ReplaceValue(string name, string value) {
-            int pos = contents.LastIndexOf(string.Format("\"{0}\"", name));
+            int pos = Contents.LastIndexOf(string.Format("\"{0}\"", name));
             if (pos != -1)
                 ReplaceValue(contents.LastIndexOf("\"v\"", pos), value);
         }
@@ -68,8 +68,13 @@ namespace TriviaMurderPartyModder.Data {
                     return;
                 File.Delete(Path.Combine(Folder, ReplaceValue(v, defaultName) + ".ogg"));
             }
-            SetValue("Has" + type.ToString(), "true");
+            SetValue("Has" + defaultName, "true");
             File.Copy(sourceFile, Path.Combine(Folder, defaultName + ".ogg"));
+        }
+
+        public void RemoveAudioFile(AudioType type) {
+            SetValue("Has" + type.ToString(), "false");
+            MessageBox.Show(type.ToString() + " audio was removed for the selected entry.");
         }
 
         public static void Get(ref DataJet jet, string dataFolder, int id, string defaultContents = null) {

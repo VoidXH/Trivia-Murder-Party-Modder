@@ -26,11 +26,16 @@
                             <Button Content="Release Check" Margin="10,135,10,0" VerticalAlignment="Top" Click="QuestionReleaseCheck"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Selected question" Height="110" Margin="10,195,10,0" VerticalAlignment="Top">
+                    <GroupBox Grid.Column="1" Header="Selected question" Height="170" Margin="10,195,10,0" VerticalAlignment="Top">
                         <Grid>
-                            <Button Content="Question audio" Margin="11,10,10,0" VerticalAlignment="Top" Click="QuestionAudio"/>
-                            <Button Content="Intro audio" Margin="11,35,10,0" VerticalAlignment="Top" Click="QuestionIntroAudio"/>
-                            <Button Content="Remove" Margin="11,60,10,0" VerticalAlignment="Top" Click="QuestionRemove"/>
+                            <GroupBox Header="Audio" Height="110" Margin="5,0,5,0" VerticalAlignment="Top">
+                                <Grid>
+                                    <Button Content="Add question" Margin="5,10,5,0" VerticalAlignment="Top" Click="QuestionAudio"/>
+                                    <Button Content="Add intro" Margin="5,35,5,0" VerticalAlignment="Top" Click="QuestionIntroAudio"/>
+                                    <Button Content="Remove intro" Margin="5,60,5,0" VerticalAlignment="Top" Click="RemoveIntroAudio"/>
+                                </Grid>
+                            </GroupBox>
+                            <Button Content="Remove" Margin="10,120,10,0" VerticalAlignment="Top" Click="QuestionRemove"/>
                         </Grid>
                     </GroupBox>
                 </Grid>
@@ -96,8 +101,8 @@
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Selected drawing" Height="85" Margin="10,195,10,0" VerticalAlignment="Top">
                         <Grid>
-                            <Button Content="Import audio" Margin="11,10,10,0" VerticalAlignment="Top" Click="WorstDrawingAudio"/>
-                            <Button Content="Remove" Margin="11,35,10,0" VerticalAlignment="Top" Click="WorstDrawingRemove"/>
+                            <Button Content="Import audio" Margin="10,10,10,0" VerticalAlignment="Top" Click="WorstDrawingAudio"/>
+                            <Button Content="Remove" Margin="10,35,10,0" VerticalAlignment="Top" Click="WorstDrawingRemove"/>
                         </Grid>
                     </GroupBox>
                 </Grid>
@@ -122,8 +127,8 @@
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Selected response" Height="85" Margin="10,195,10,0" VerticalAlignment="Top">
                         <Grid>
-                            <Button Content="Import audio" Margin="11,10,10,0" VerticalAlignment="Top" Click="WorstResponseAudio"/>
-                            <Button Content="Remove" Margin="11,35,10,0" VerticalAlignment="Top" Click="WorstResponseRemove"/>
+                            <Button Content="Import audio" Margin="10,10,10,0" VerticalAlignment="Top" Click="WorstResponseAudio"/>
+                            <Button Content="Remove" Margin="10,35,10,0" VerticalAlignment="Top" Click="WorstResponseRemove"/>
                         </Grid>
                     </GroupBox>
                 </Grid>
