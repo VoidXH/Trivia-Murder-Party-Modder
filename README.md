@@ -12,6 +12,19 @@ The files used by the game for each category are under `The Jackbox Party Pack 3
 * **Save**: Overwrite the opened file with currently open questions.
 * **Save As...**: Save currently open questions to a custom file.
 * **Release check**: Checks if the question set is compatible with the game (correct IDs, audio files available). If this doesn't show an error, you can play the game with the file that would be saved now.
+* **Equalize**: Make answers in different positions equally likely. Fixes the "choose B or the longest" hack you used in high school.
+
+### Audio files
+It is mandated by the game to have every question and prompt read out loud. It's as simple as hitting record in Audacity and saving it in the game's format (Ogg Vorbis). If Audacity records in stereo, it has to be converted to mono with the "Split stereo to mono" option on the Audio Track's name's dropdown.
+
+To sound like the narrator, apply the following steps before saving. These are not required, but will add a lot to the atmosphere.
+* Set a uniform volume by using the following filters:
+  * Effect/Amplify: defaults to max volume, that's what we need.
+  * Effect/Compressor: just open it and apply, do it multiple times is needed.
+* Make your voice low-pitched with the Effect/Change Pitch filters.
+  * Set it to -20% for male and -30% for female voice actors.
+* Cut off the silent parts, the game has enough delays already.
+  * Click and drag along the mostly flat (zero) parts of the waveform, and press Delete.
 
 ### Question editor
 These are the main questions for the game. The selection is not completely random, the game selects one question from the ones that were shown the longest time ago. To add a new question, just start typing in the empty line when it's selected. The fields are:
@@ -21,9 +34,10 @@ These are the main questions for the game. The selection is not completely rando
 * **Correct**: The correct answer's number from 1 to 4.
 
 The options available for the currently selected question:
-* **Question audio**: Import an audio file that is the question read out. Must be a mono Vorbis file in OGG container.
-* **Intro audio**: Any speech before the question is shown. Must be a mono Vorbis file in OGG container.
-* **Remove**: Delete this question from the open question set.
+* **Add question audio**: Import an audio file that is the question read out. Must be a mono Vorbis file in OGG container.
+* **Add intro audio**: Any speech before the question is shown. Must be a mono Vorbis file in OGG container.
+* **Remove intro audio**: Remove the intro audio from this question.
+* **Remove**: Delete this question from the question set.
 
 ### Final Round editor
 The final round consists of topics, each containing correct and incorrect choices. This editor has a tree which shows all topics, and those can be expanded to choices. Use the "Add topic" button to add a new node to the tree. The options for the selected topic are:
@@ -31,6 +45,7 @@ The final round consists of topics, each containing correct and incorrect choice
 * **Add in bulk...**: Opens a dialog where you can list multiple correct and incorrect choices. This is a faster way than adding each choice individually and setting them to correct.
 * **Add topic audio**: Import an audio file that is the topic read out. Must be a mono Vorbis file in OGG container.
 * **ID**: The unique identifier of the topic (integer). The only requirement is that it must be unique, but the editor warns you at saving if an ID is not unique.
+* **Topic**: Displayed title of the topic.
 
 The options for the selected choice are:
 * **Correct**: Check if the choice is correct for the topic.
