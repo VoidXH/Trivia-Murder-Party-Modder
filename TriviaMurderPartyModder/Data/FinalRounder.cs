@@ -31,7 +31,7 @@ namespace TriviaMurderPartyModder.Data {
             if (audioFile == null) {
                 return;
             }
-            DataJet.Get(ref jet, dataFolder, id,
+            DataJet.GetIfNotLoaded(ref jet, dataFolder, id,
                 "{\"fields\":[{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasQ\"},{\"t\":\"A\",\"n\":\"Q\"}]}");
             jet.SetAudioFile(AudioType.Q, audioFile);
         }

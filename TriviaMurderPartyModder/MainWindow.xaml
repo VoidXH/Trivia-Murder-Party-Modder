@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TriviaMurderPartyModder"
         mc:Ignorable="d"
-        Title="Trivia Murder Party modder" Height="450" Width="800" Closing="Window_Closing">
+        Title="Trivia Murder Party modder" Height="500" Width="800" Closing="Window_Closing">
     <Grid>
         <TabControl x:Name="tabControl">
             <TabItem Header="Question">
@@ -14,7 +14,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="150"/>
                     </Grid.ColumnDefinitions>
-                    <DataGrid x:Name="questions" IsManipulationEnabled="True" PreviewKeyDown="MoveRight">
+                    <DataGrid x:Name="questions" IsManipulationEnabled="True" PreviewKeyDown="MoveRight" SelectionChanged="QuestionSelected">
                     </DataGrid>
                     <GroupBox Grid.Column="1" Header="Data" Height="210" Margin="10,10,10,0" VerticalAlignment="Top">
                         <Grid>
@@ -28,16 +28,18 @@
                                     ToolTip="Make answers in different positions equally likely."/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Selected question" Height="170" Margin="10,220,10,0" VerticalAlignment="Top">
+                    <GroupBox Grid.Column="1" Header="Selected question" Height="185" Margin="10,220,10,0" VerticalAlignment="Top">
                         <Grid>
-                            <GroupBox Header="Audio" Height="110" Margin="5,0,5,0" VerticalAlignment="Top">
+                            <GroupBox Header="Audio" Height="130" Margin="5,0,5,0" VerticalAlignment="Top">
                                 <Grid>
                                     <Button Content="Add question" Margin="5,10,5,0" VerticalAlignment="Top" Click="QuestionAudio"/>
                                     <Button Content="Add intro" Margin="5,35,5,0" VerticalAlignment="Top" Click="QuestionIntroAudio"/>
-                                    <Button Content="Remove intro" Margin="5,60,5,0" VerticalAlignment="Top" Click="RemoveIntroAudio"/>
+                                    <Button Content="Remove intro" Margin="5,80,5,0" VerticalAlignment="Top" Click="RemoveIntroAudio"/>
+                                    <CheckBox x:Name="hasIntro" HorizontalAlignment="Left" Margin="5,60,0,0" VerticalAlignment="Top"
+                                               Content="Has intro" IsEnabled="False"/>
                                 </Grid>
                             </GroupBox>
-                            <Button Content="Remove" Margin="10,120,10,0" VerticalAlignment="Top" Click="QuestionRemove"/>
+                            <Button Content="Remove" Margin="10,135,10,0" VerticalAlignment="Top" Click="QuestionRemove"/>
                         </Grid>
                     </GroupBox>
                 </Grid>

@@ -88,6 +88,10 @@
     <Compile Include="Dialogs\BulkOption.xaml.cs">
       <DependentUpon>BulkOption.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindow.FinalRound.cs" />
+    <Compile Include="MainWindow.Question.cs" />
+    <Compile Include="MainWindow.WorstDrawing.cs" />
+    <Compile Include="MainWindow.WorstResponse.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

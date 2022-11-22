@@ -23,7 +23,7 @@
             if (audioFile == null) {
                 return;
             }
-            DataJet.Get(ref jet, dataFolder, ID, string.Format(
+            DataJet.GetIfNotLoaded(ref jet, dataFolder, ID, string.Format(
                 "{{\"fields\":[{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasBumperAudio\"}},{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasBumperType\"}}," +
                 "{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasCorrectAudio\"}},{{\"t\":\"B\",\"v\":\"false\",\"n\":\"HasQuestionAudio\"}}," +
                 "{{\"t\":\"S\",\"v\":\"\",\"n\":\"Suggestions\"}},{{\"t\":\"S\",\"v\":\"{0}\",\"n\":\"Category\"}}," +
