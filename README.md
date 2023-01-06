@@ -14,6 +14,9 @@ The files used by the game for each category are under `The Jackbox Party Pack 3
 * **Release check**: Checks if the question set is compatible with the game (correct IDs, audio files available). If this doesn't show an error, you can play the game with the file that would be saved now.
 * **Equalize**: Make answers in different positions equally likely. Fixes the "choose B or the longest" hack you used in high school.
 
+### Trivia Murder Party 2
+TMP2 is using the same exact file structures, thus the modes also present in TMP1 can be edited with the Modder. The *Import All* feature looks for TMP1 files, and because of this, it can't be used for TMP2. Instead, the question and final round files have to be manually imported on their respective tabs with the *Import* button. Their files (`TDQuestion.jet` and `TDFinalRound.jet`) are located under `The Jackbox Party Pack 6\games\TriviaDeath2\content`.
+
 ### Audio files
 It is mandated by the game to have every question and prompt read out loud. It's as simple as hitting record in Audacity and saving it in the game's format (Ogg Vorbis). If Audacity records in stereo, it has to be converted to mono with the "Split stereo to mono" option on the Audio Track's name's dropdown.
 
