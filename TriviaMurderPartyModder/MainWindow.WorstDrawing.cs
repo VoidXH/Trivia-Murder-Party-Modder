@@ -16,7 +16,7 @@ namespace TriviaMurderPartyModder {
         void WorstDrawingReleaseCheck(object _, RoutedEventArgs e) => ReleaseCheck(worstDrawingList);
         void WorstDrawingAudio(object _, RoutedEventArgs e) =>
             ((WorstDrawing)worstDrawings.SelectedItem).ImportAudio(worstDrawingList.DataFolderPath,
-                LoadAudio(questions, questionList));
+                LoadAudio(worstDrawings, worstDrawingList));
         void WorstDrawingRemove(object _, RoutedEventArgs e) => RemoveElement(worstDrawings, worstDrawingList);
     }
 }

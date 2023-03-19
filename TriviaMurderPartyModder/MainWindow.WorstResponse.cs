@@ -16,7 +16,7 @@ namespace TriviaMurderPartyModder {
         void WorstResponseReleaseCheck(object _, RoutedEventArgs e) => ReleaseCheck(worstResponseList);
         void WorstResponseAudio(object _, RoutedEventArgs e) =>
             ((WorstResponse)worstResponses.SelectedItem).ImportAudio(worstResponseList.DataFolderPath,
-                LoadAudio(questions, questionList));
+                LoadAudio(worstResponses, worstResponseList));
         void WorstResponseRemove(object _, RoutedEventArgs e) => RemoveElement(worstResponses, worstResponseList);
     }
 }

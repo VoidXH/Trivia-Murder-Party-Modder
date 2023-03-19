@@ -92,6 +92,18 @@ namespace TriviaMurderPartyModder {
                 list.Issue(Properties.Resources.noAudioImportSelection);
                 return null;
             }
+            return FinalizeLoadAudio(list);
+        }
+
+        string LoadAudio<T>(TreeView tree, DataFile<T> list) {
+            if (tree.SelectedItem == null) {
+                list.Issue(Properties.Resources.noAudioImportSelection);
+                return null;
+            }
+            return FinalizeLoadAudio(list);
+        }
+
+        string FinalizeLoadAudio<T>(DataFile<T> list) {
             if (list.FileName == null) {
                 list.Issue(Properties.Resources.noSavedFile);
                 return null;

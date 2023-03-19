@@ -74,8 +74,12 @@ namespace TriviaMurderPartyModder {
             }
         }
 
-        void AddTopicAudio(object _, RoutedEventArgs e) =>
-            selectedTopic.ImportTopicAudio(finalRoundList.DataFolderPath, LoadAudio(questions, questionList));
+        void AddTopicAudio(object _, RoutedEventArgs e) {
+            string file = LoadAudio(finalRounders, finalRoundList);
+            if (file != null) {
+                selectedTopic.ImportTopicAudio(finalRoundList.DataFolderPath, file);
+            }
+        }
 
         void TopicIDChange(object sender, TextChangedEventArgs e) {
             TextBox box = (TextBox)sender;
