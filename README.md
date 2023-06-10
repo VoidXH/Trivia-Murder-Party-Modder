@@ -8,7 +8,7 @@ Data editor and custom question importer for Trivia Murder Party by Jackbox Game
 The files used by the game for each category are under `The Jackbox Party Pack 3\games\TriviaDeath\content`. The data functions on the sidebar are:
 * **Import**: Loads questions from a file, and overwrites all open questions.
 * **Import last save**: Loads the last saved question file.
-* **Import**: Loads questions from a file, and appends them at the end of open questions.
+* **Merge**: Loads questions from a file, and appends them at the end of open questions.
 * **Save**: Overwrite the opened file with currently open questions.
 * **Save As...**: Save currently open questions to a custom file.
 * **Release check**: Checks if the question set is compatible with the game (correct IDs, audio files available). If this doesn't show an error, you can play the game with the file that would be saved now.
