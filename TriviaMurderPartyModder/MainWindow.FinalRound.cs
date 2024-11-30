@@ -9,6 +9,9 @@ using TriviaMurderPartyModder.Properties;
 
 namespace TriviaMurderPartyModder {
     public partial class MainWindow {
+        FinalRounder selectedTopic;
+        FinalRounderChoice selectedChoice;
+
         void SelectFinalQuestion(FinalRounder question) {
             selectedTopic = question;
             topicId.Text = question.ID.ToString();
@@ -75,7 +78,7 @@ namespace TriviaMurderPartyModder {
         }
 
         void AddTopicAudio(object _, RoutedEventArgs e) {
-            string file = LoadAudio(finalRounders, finalRoundList);
+            string file = AudioHandling.LoadAudio(finalRounders, finalRoundList);
             if (file != null) {
                 selectedTopic.ImportTopicAudio(finalRoundList.DataFolderPath, file);
             }

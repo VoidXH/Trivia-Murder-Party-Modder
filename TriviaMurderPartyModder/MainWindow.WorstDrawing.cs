@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 
 using TriviaMurderPartyModder.Data;
+using TriviaMurderPartyModder.Files;
 using TriviaMurderPartyModder.Properties;
 
 namespace TriviaMurderPartyModder {
@@ -13,10 +14,10 @@ namespace TriviaMurderPartyModder {
         void WorstDrawingMerge(object _, RoutedEventArgs e) => worstDrawingList.Import(false);
         void WorstDrawingSave(object _, RoutedEventArgs e) => worstDrawingList.Save();
         void WorstDrawingSaveAs(object _, RoutedEventArgs e) => worstDrawingList.SaveAs();
-        void WorstDrawingReleaseCheck(object _, RoutedEventArgs e) => ReleaseCheck(worstDrawingList);
+        void WorstDrawingReleaseCheck(object _, RoutedEventArgs e) => worstDrawingList.ReleaseCheck();
         void WorstDrawingAudio(object _, RoutedEventArgs e) =>
             ((WorstDrawing)worstDrawings.SelectedItem).ImportAudio(worstDrawingList.DataFolderPath,
-                LoadAudio(worstDrawings, worstDrawingList));
-        void WorstDrawingRemove(object _, RoutedEventArgs e) => RemoveElement(worstDrawings, worstDrawingList);
+                AudioHandling.LoadAudio(worstDrawings, worstDrawingList));
+        void WorstDrawingRemove(object _, RoutedEventArgs e) => worstDrawingList.RemoveElement(worstDrawings);
     }
 }

@@ -4,11 +4,9 @@ using System.IO;
 using System.Windows;
 
 namespace TriviaMurderPartyModder.Files {
-    public abstract class DataFile<T> : ObservableCollection<T> {
-        static readonly OpenFileDialog opener = new OpenFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
-        static readonly SaveFileDialog saver = new SaveFileDialog { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
-
-        readonly string items;
+    public abstract class DataFile<T>(string items) : ObservableCollection<T> {
+        static readonly OpenFileDialog opener = new() { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
+        static readonly SaveFileDialog saver = new() { Filter = "Trivia Murder Party database (*.jet)|*.jet" };
 
         public bool Unsaved { get; set; }
         public string FileName { get; private set; }
@@ -19,8 +17,6 @@ namespace TriviaMurderPartyModder.Files {
         /// The default name of the game mode's file in Trivia Murder Party's folder.
         /// </summary>
         protected abstract string ReferenceFileName { get; }
-
-        public DataFile(string items) => this.items = items;
 
         protected abstract void Add(string fileName);
         protected abstract bool SaveAs(string name);

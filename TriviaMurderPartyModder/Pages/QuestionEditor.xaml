@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="TriviaMurderPartyModder.Pages.QuestionEditor"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:TriviaMurderPartyModder.Pages"
+      mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="#FFE5E5E5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="150"/>
+        </Grid.ColumnDefinitions>
+        <DataGrid x:Name="questions" IsManipulationEnabled="True" PreviewKeyDown="MoveRight" SelectionChanged="QuestionSelected">
+        </DataGrid>
+        <GroupBox Grid.Column="1" Header="Data" Height="210" Margin="10,10,10,0" VerticalAlignment="Top">
+            <Grid>
+                <Button Content="Import" Margin="10,10,10,0" VerticalAlignment="Top" Click="QuestionImport"/>
+                <Button x:Name="questionLast" Content="Import last save" Margin="10,35,10,0" VerticalAlignment="Top" Click="QuestionImportLastSave"/>
+                <Button Content="Merge" Margin="10,60,10,0" VerticalAlignment="Top" Click="QuestionMerge"/>
+                <Button Content="Save" Margin="10,85,10,0" VerticalAlignment="Top" Click="QuestionSave"/>
+                <Button Content="Save As..." Margin="10,110,10,0" VerticalAlignment="Top" Click="QuestionSaveAs"/>
+                <Button Content="Release Check" Margin="10,135,10,0" VerticalAlignment="Top" Click="QuestionReleaseCheck"/>
+                <Button Content="Equalize" Margin="10,160,10,0" VerticalAlignment="Top" Click="QuestionEqualize"
+                    ToolTip="Make answers in different positions equally likely."/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="Selected question" Height="185" Margin="10,220,10,0" VerticalAlignment="Top">
+            <Grid>
+                <GroupBox Header="Audio" Height="130" Margin="5,0,5,0" VerticalAlignment="Top">
+                    <Grid>
+                        <Button Content="Add question" Margin="5,10,5,0" VerticalAlignment="Top" Click="QuestionAudio"/>
+                        <Button Content="Add intro" Margin="5,35,5,0" VerticalAlignment="Top" Click="QuestionIntroAudio"/>
+                        <Button Content="Remove intro" Margin="5,80,5,0" VerticalAlignment="Top" Click="RemoveIntroAudio"/>
+                        <CheckBox x:Name="hasIntro" HorizontalAlignment="Left" Margin="5,60,0,0" VerticalAlignment="Top"
+                               Content="Has intro" IsEnabled="False"/>
+                    </Grid>
+                </GroupBox>
+                <Button Content="Remove" Margin="10,135,10,0" VerticalAlignment="Top" Click="QuestionRemove"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>
