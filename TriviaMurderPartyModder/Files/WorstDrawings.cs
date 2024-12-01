@@ -20,7 +20,7 @@ namespace TriviaMurderPartyModder.Files {
                 if (id == 3 || category == 9)
                     continue;
                 id = contents.IndexOf(':', id) + 1;
-                WorstDrawing imported = new WorstDrawing(int.Parse(contents.Substring(id, contents.IndexOf(',', id) - id).Trim()),
+                WorstDrawing imported = new(int.Parse(contents[id..contents.IndexOf(',', id)].Trim()),
                     Parsing.GetTextEntry(ref contents, contents.IndexOf(':', category) + 1));
                 Add(imported);
             }
@@ -29,13 +29,13 @@ namespace TriviaMurderPartyModder.Files {
         public static void DrawingIssue(string text) => MessageBox.Show(text, "Drawing issue", MessageBoxButton.OK, MessageBoxImage.Error);
 
         protected override bool SaveAs(string name) {
-            WorstDrawing[] ordered = this.OrderBy(x => x.ID).ToArray();
+            WorstDrawing[] ordered = [.. this.OrderBy(x => x.ID)];
             Clear();
             for (int i = 0; i < ordered.Length; i++) {
                 Add(ordered[i]);
             }
 
-            StringBuilder output = new StringBuilder("{\"content\":[{");
+            StringBuilder output = new("{\"content\":[{");
             for (int i = 0, end = Count; i < end; ++i) {
                 WorstDrawing wd = this[i];
                 output.Append("\"x\":false,\"id\":").Append(wd.ID);

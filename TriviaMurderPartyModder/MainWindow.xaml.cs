@@ -1,10 +1,7 @@
 ﻿using System.ComponentModel;
 using System.IO;
 using System.Windows;
-using System.Windows.Input;
 
-using TriviaMurderPartyModder.Dialogs;
-using TriviaMurderPartyModder.Files;
 using TriviaMurderPartyModder.Properties;
 
 using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
@@ -14,40 +11,21 @@ namespace TriviaMurderPartyModder {
     /// Main application window, collecting frames for all editable files.
     /// </summary>
     public partial class MainWindow : Window {
-        readonly FinalRounders finalRoundList = [];
-        readonly WorstDrawings worstDrawingList = [];
-        readonly WorstResponses worstResponseList = [];
-
         /// <summary>
         /// Main application window, collecting frames for all editable files.
         /// </summary>
         public MainWindow() {
             InitializeComponent();
-            finalRoundLast.EnableIfHasSave(Settings.Default.lastFinalRound);
-            worstDrawingLast.EnableIfHasSave(Settings.Default.lastWorstDrawing);
-            worstResponseLast.EnableIfHasSave(Settings.Default.lastWorstResponse);
             gameBrowser.SelectedPath = Settings.Default.lastGameLocation;
-            finalRounders.ItemsSource = finalRoundList;
-            worstDrawings.ItemsSource = worstDrawingList;
-            worstResponses.ItemsSource = worstResponseList;
-            worstDrawings.CellEditEnding += WorstDrawings_CellEditEnding;
         }
 
-        void MoveRight(object _, KeyEventArgs e) => WPFExtensions.MoveRight(e);
-
+        /// <summary>
+        /// Check for unsaved changes before the user tries to close the window, and save the last loaded file paths if the window can close.
+        /// </summary>
         void Window_Closing(object _, CancelEventArgs e) {
-            e.Cancel = !questionEditor.OnClose() || !finalRoundList.UnsavedPrompt() ||
-                !worstDrawingList.UnsavedPrompt() || !worstResponseList.UnsavedPrompt();
+            e.Cancel = !questionEditor.OnClose() || !finalRoundEditor.OnClose() ||
+                !worstDrawingEditor.OnClose() || !worstResponseEditor.OnClose();
             if (!e.Cancel) {
-                if (!string.IsNullOrEmpty(finalRoundList.FileName)) {
-                    Settings.Default.lastFinalRound = finalRoundList.FileName;
-                }
-                if (!string.IsNullOrEmpty(worstDrawingList.FileName)) {
-                    Settings.Default.lastWorstDrawing = worstDrawingList.FileName;
-                }
-                if (!string.IsNullOrEmpty(worstResponseList.FileName)) {
-                    Settings.Default.lastWorstResponse = worstResponseList.FileName;
-                }
                 if (!string.IsNullOrEmpty(gameBrowser.SelectedPath)) {
                     Settings.Default.lastGameLocation = gameBrowser.SelectedPath;
                 }
@@ -55,13 +33,16 @@ namespace TriviaMurderPartyModder {
             }
         }
 
+        /// <summary>
+        /// When selecting The Jackbox Party Pack 3's root folder, open the corresponding game files for all editors.
+        /// </summary>
         void ImportAll(object _, RoutedEventArgs e) {
             if (gameBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 string directory = Path.Combine(gameBrowser.SelectedPath, "games", "TriviaDeath", "content");
                 questionEditor.ImportReference(directory);
-                finalRoundList.ImportReference(directory);
-                worstDrawingList.ImportReference(directory);
-                worstResponseList.ImportReference(directory);
+                finalRoundEditor.ImportReference(directory);
+                worstDrawingEditor.ImportReference(directory);
+                worstResponseEditor.ImportReference(directory);
             }
         }
 

@@ -7,10 +7,31 @@ using TriviaMurderPartyModder.Dialogs;
 using TriviaMurderPartyModder.Files;
 using TriviaMurderPartyModder.Properties;
 
-namespace TriviaMurderPartyModder {
-    public partial class MainWindow {
+namespace TriviaMurderPartyModder.Pages {
+    /// <summary>
+    /// Interaction logic for FinalRoundEditor.xaml
+    /// </summary>
+    public partial class FinalRoundEditor : UserControl {
+        readonly FinalRounders finalRoundList = [];
+
         FinalRounder selectedTopic;
         FinalRounderChoice selectedChoice;
+
+        public FinalRoundEditor() {
+            InitializeComponent();
+            finalRoundLast.EnableIfHasSave(Settings.Default.lastFinalRound);
+            finalRounders.ItemsSource = finalRoundList;
+        }
+
+        public void ImportReference(string contentPath) => finalRoundList.ImportReference(contentPath);
+
+        public bool OnClose() {
+            bool cancel = finalRoundList.UnsavedPrompt();
+            if (!cancel && !string.IsNullOrEmpty(finalRoundList.FileName)) {
+                Settings.Default.lastFinalRound = finalRoundList.FileName;
+            }
+            return cancel;
+        }
 
         void SelectFinalQuestion(FinalRounder question) {
             selectedTopic = question;
@@ -38,7 +59,7 @@ namespace TriviaMurderPartyModder {
         }
 
         void AddTopic(object _, RoutedEventArgs e) {
-            FinalRounder newTopic = new FinalRounder(0, "New topic");
+            FinalRounder newTopic = new(0, "New topic");
             finalRoundList.Add(newTopic);
             newTopic.IsSelected = true;
             topic.SelectAll();
@@ -47,7 +68,7 @@ namespace TriviaMurderPartyModder {
 
         void AddTopicChoice(object _, RoutedEventArgs e) {
             if (selectedTopic != null) {
-                FinalRounderChoice choice = new FinalRounderChoice(false, "New choice");
+                FinalRounderChoice choice = new(false, "New choice");
                 selectedTopic.Items.Add(choice);
                 selectedTopic.IsExpanded = true;
                 choice.IsSelected = true;
@@ -59,18 +80,18 @@ namespace TriviaMurderPartyModder {
 
         void AddTopicChoices(object _, RoutedEventArgs e) {
             if (selectedTopic != null) {
-                BulkOption form = new BulkOption();
+                BulkOption form = new();
                 bool? result = form.ShowDialog();
                 if (result.HasValue && result.Value) {
                     selectedTopic.IsExpanded = true;
                     finalRoundList.Unsaved = true;
                     string[] correct = form.CorrectValues, incorrect = form.IncorrectValues;
                     for (int i = 0; i < correct.Length; ++i) {
-                        FinalRounderChoice choice = new FinalRounderChoice(true, correct[i]);
+                        FinalRounderChoice choice = new(true, correct[i]);
                         selectedTopic.Items.Add(choice);
                     }
                     for (int i = 0; i < incorrect.Length; ++i) {
-                        FinalRounderChoice choice = new FinalRounderChoice(false, incorrect[i]);
+                        FinalRounderChoice choice = new(false, incorrect[i]);
                         selectedTopic.Items.Add(choice);
                     }
                 }

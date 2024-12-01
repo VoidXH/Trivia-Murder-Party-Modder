@@ -13,97 +13,13 @@
                 <pages:QuestionEditor x:Name="questionEditor"/>
             </TabItem>
             <TabItem Header="Final Round">
-                <Grid Background="#FFE5E5E5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="258"/>
-                        <ColumnDefinition Width="150"/>
-                    </Grid.ColumnDefinitions>
-                    <TreeView x:Name="finalRounders" SelectedItemChanged="FinalRoundSelection"/>
-                    <Button Grid.Column="1" Content="Add topic" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="AddTopic"/>
-                    <GroupBox Grid.Column="1" Header="Selected topic" Height="135" Margin="10,35,10,0" VerticalAlignment="Top">
-                        <Grid>
-                            <Button Content="Add choice" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="AddTopicChoice"/>
-                            <Button Content="Add in bulk..." Margin="116,10,10,0" VerticalAlignment="Top" Click="AddTopicChoices"/>
-                            <Button Content="Add topic audio" Margin="0,35,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="206" Click="AddTopicAudio"/>
-                            <Button Content="Remove" Margin="0,60,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Click="RemoveTopic"/>
-                            <Label Content="ID:" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top"/>
-                            <TextBox x:Name="topicId" Height="20" Margin="39,60,115,0" TextWrapping="NoWrap" VerticalAlignment="Top" TextChanged="TopicIDChange" Text="0"/>
-                            <Label Content="Topic:" HorizontalAlignment="Left" Margin="10,81,0,0" VerticalAlignment="Top"/>
-                            <TextBox x:Name="topic" Height="20" Margin="55,85,10,0" TextWrapping="NoWrap" VerticalAlignment="Top" TextChanged="TopicChange"/>
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Selected choice" Height="90" Margin="10,175,10,0" VerticalAlignment="Top">
-                        <Grid>
-                            <CheckBox x:Name="choiceCorrect" Content="Correct" HorizontalAlignment="Left" Margin="10,13,0,0" VerticalAlignment="Top" Checked="ChoiceCorrect" Unchecked="ChoiceCorrect"/>
-                            <Button Content="Remove" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Click="RemoveChoice"/>
-                            <Label Content="Answer:" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
-                            <TextBox x:Name="choiceAnswer" Height="20" Margin="66,35,10,0" TextWrapping="NoWrap" VerticalAlignment="Top" TextChanged="ChoiceText"/>
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Grid.Column="2" Header="Data" Height="185" Margin="10,10,10,0" VerticalAlignment="Top">
-                        <Grid>
-                            <Button Content="Import" Margin="10,10,10,0" VerticalAlignment="Top" Click="FinalRoundImport"/>
-                            <Button x:Name="finalRoundLast" Content="Import last save" Margin="10,35,10,0" VerticalAlignment="Top" Click="FinalRoundImportLastSave"/>
-                            <Button Content="Merge" Margin="10,60,10,0" VerticalAlignment="Top" Click="FinalRoundMerge"/>
-                            <Button Content="Save" Margin="10,85,10,0" VerticalAlignment="Top" Click="FinalRoundSave"/>
-                            <Button Content="Save As..." Margin="10,110,10,0" VerticalAlignment="Top" Click="FinalRoundSaveAs"/>
-                            <Button Content="Release Check" Margin="10,135,10,0" VerticalAlignment="Top" Click="FinalRoundReleaseCheck"/>
-                        </Grid>
-                    </GroupBox>
-                </Grid>
+                <pages:FinalRoundEditor x:Name="finalRoundEditor"/>
             </TabItem>
             <TabItem Header="Worst drawing">
-                <Grid Background="#FFE5E5E5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="150"/>
-                    </Grid.ColumnDefinitions>
-                    <DataGrid x:Name="worstDrawings" IsManipulationEnabled="True" PreviewKeyDown="MoveRight">
-                    </DataGrid>
-                    <GroupBox Grid.Column="1" Header="Data" Height="185" Margin="10,10,10,0" VerticalAlignment="Top">
-                        <Grid>
-                            <Button Content="Import" Margin="10,10,10,0" VerticalAlignment="Top" Click="WorstDrawingImport"/>
-                            <Button x:Name="worstDrawingLast" Content="Import last save" Margin="10,35,10,0" VerticalAlignment="Top" Click="WorstDrawingImportLastSave"/>
-                            <Button Content="Merge" Margin="10,60,10,0" VerticalAlignment="Top" Click="WorstDrawingMerge"/>
-                            <Button Content="Save" Margin="10,85,10,0" VerticalAlignment="Top" Click="WorstDrawingSave"/>
-                            <Button Content="Save As..." Margin="10,110,10,0" VerticalAlignment="Top" Click="WorstDrawingSaveAs"/>
-                            <Button Content="Release Check" Margin="10,135,10,0" VerticalAlignment="Top" Click="WorstDrawingReleaseCheck"/>
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Selected drawing" Height="85" Margin="10,195,10,0" VerticalAlignment="Top">
-                        <Grid>
-                            <Button Content="Import audio" Margin="10,10,10,0" VerticalAlignment="Top" Click="WorstDrawingAudio"/>
-                            <Button Content="Remove" Margin="10,35,10,0" VerticalAlignment="Top" Click="WorstDrawingRemove"/>
-                        </Grid>
-                    </GroupBox>
-                </Grid>
+                <pages:WorstDrawingEditor x:Name="worstDrawingEditor"/>
             </TabItem>
             <TabItem Header="Worst response">
-                <Grid Background="#FFE5E5E5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="150"/>
-                    </Grid.ColumnDefinitions>
-                    <DataGrid x:Name="worstResponses" IsManipulationEnabled="True" PreviewKeyDown="MoveRight">
-                    </DataGrid>
-                    <GroupBox Grid.Column="1" Header="Data" Height="185" Margin="10,10,10,0" VerticalAlignment="Top">
-                        <Grid>
-                            <Button Content="Import" Margin="10,10,10,0" VerticalAlignment="Top" Click="WorstResponseImport"/>
-                            <Button x:Name="worstResponseLast" Content="Import last save" Margin="10,35,10,0" VerticalAlignment="Top" Click="WorstResponseImportLastSave"/>
-                            <Button Content="Merge" Margin="10,60,10,0" VerticalAlignment="Top" Click="WorstResponseMerge"/>
-                            <Button Content="Save" Margin="10,85,10,0" VerticalAlignment="Top" Click="WorstResponseSave"/>
-                            <Button Content="Save As..." Margin="10,110,10,0" VerticalAlignment="Top" Click="WorstResponseSaveAs"/>
-                            <Button Content="Release Check" Margin="10,135,10,0" VerticalAlignment="Top" Click="WorstResponseReleaseCheck"/>
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Selected response" Height="85" Margin="10,195,10,0" VerticalAlignment="Top">
-                        <Grid>
-                            <Button Content="Import audio" Margin="10,10,10,0" VerticalAlignment="Top" Click="WorstResponseAudio"/>
-                            <Button Content="Remove" Margin="10,35,10,0" VerticalAlignment="Top" Click="WorstResponseRemove"/>
-                        </Grid>
-                    </GroupBox>
-                </Grid>
+                <pages:WorstResponseEditor x:Name="worstResponseEditor"/>
             </TabItem>
         </TabControl>
         <Button Content="Import all" Margin="0,1,1,0" Height="20" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Click="ImportAll"/>

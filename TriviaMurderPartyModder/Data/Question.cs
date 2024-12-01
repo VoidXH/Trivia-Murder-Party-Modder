@@ -22,18 +22,13 @@ namespace TriviaMurderPartyModder.Data {
 
         public string this[int key] {
             get {
-                switch (key) {
-                    case 1:
-                        return Answer1;
-                    case 2:
-                        return Answer2;
-                    case 3:
-                        return Answer3;
-                    case 4:
-                        return Answer4;
-                    default:
-                        throw new Exception("Out of range");
-                }
+                return key switch {
+                    1 => Answer1,
+                    2 => Answer2,
+                    3 => Answer3,
+                    4 => Answer4,
+                    _ => throw new Exception("Out of range"),
+                };
             }
             set {
                 switch (key) {
@@ -54,8 +49,6 @@ namespace TriviaMurderPartyModder.Data {
                 }
             }
         }
-
-        DataJet jet;
 
         public bool GetIntroAudio(string dataFolder) {
             DataJet.GetIfNotLoaded(ref jet, dataFolder, ID, defaultJet);

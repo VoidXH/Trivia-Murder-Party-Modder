@@ -9,7 +9,7 @@ namespace TriviaMurderPartyModder.Files {
     public class WorstResponses : DataFile<WorstResponse> {
         protected override string ReferenceFileName => "TDWorstResponse.jet";
 
-        public WorstResponses() : base("drawing topics") { }
+        public WorstResponses() : base("response topics") { }
 
         protected override void Add(string fileName) {
             string contents = File.ReadAllText(fileName);
@@ -20,7 +20,7 @@ namespace TriviaMurderPartyModder.Files {
                 if (id == 3 || category == 9)
                     continue;
                 id = contents.IndexOf(':', id) + 1;
-                WorstResponse imported = new WorstResponse(int.Parse(contents.Substring(id, contents.IndexOf(',', id) - id).Trim()),
+                WorstResponse imported = new(int.Parse(contents[id..contents.IndexOf(',', id)].Trim()),
                     Parsing.GetTextEntry(ref contents, contents.IndexOf(':', category) + 1));
                 Add(imported);
             }
@@ -29,13 +29,13 @@ namespace TriviaMurderPartyModder.Files {
         public static void ResponseIssue(string text) => MessageBox.Show(text, "Response issue", MessageBoxButton.OK, MessageBoxImage.Error);
 
         protected override bool SaveAs(string name) {
-            WorstResponse[] ordered = this.OrderBy(x => x.ID).ToArray();
+            WorstResponse[] ordered = [.. this.OrderBy(x => x.ID)];
             Clear();
             for (int i = 0; i < ordered.Length; i++) {
                 Add(ordered[i]);
             }
 
-            StringBuilder output = new StringBuilder("{\"content\":[{");
+            StringBuilder output = new("{\"content\":[{");
             for (int i = 0, end = Count; i < end; ++i) {
                 WorstResponse wd = this[i];
                 output.Append("\"x\":false,\"id\":").Append(wd.ID);

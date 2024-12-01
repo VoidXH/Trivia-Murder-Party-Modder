@@ -4,13 +4,10 @@
             get => question;
             set {
                 question = value;
-                if (jet != null)
-                    jet.SetValues(new string[]{"QuestionText", "Category"}, value);
+                jet?.SetValues(["QuestionText", "Category"], value);
             }
         }
         string question;
-
-        DataJet jet;
 
         public WorstResponse() => question = string.Empty;
 

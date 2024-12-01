@@ -12,8 +12,14 @@ namespace TriviaMurderPartyModder.Pages {
     /// Main question list editor.
     /// </summary>
     public partial class QuestionEditor : UserControl {
+        /// <summary>
+        /// Main question list.
+        /// </summary>
         readonly Questions questionList = [];
 
+        /// <summary>
+        /// Main question list editor.
+        /// </summary>
         public QuestionEditor() {
             InitializeComponent();
             questionLast.EnableIfHasSave(Settings.Default.lastQuestion);

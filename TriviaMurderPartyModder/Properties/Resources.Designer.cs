@@ -10,8 +10,8 @@
 
 namespace TriviaMurderPartyModder.Properties {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,15 @@ namespace TriviaMurderPartyModder.Properties {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace TriviaMurderPartyModder.Properties {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace TriviaMurderPartyModder.Properties {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Release check result.
         /// </summary>
@@ -68,7 +68,7 @@ namespace TriviaMurderPartyModder.Properties {
                 return ResourceManager.GetString("checkResult", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Release check successful. This set is compatible with the game..
         /// </summary>
@@ -77,7 +77,7 @@ namespace TriviaMurderPartyModder.Properties {
                 return ResourceManager.GetString("checkSuccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Audio files are missing for ID {0}..
         /// </summary>
@@ -86,7 +86,7 @@ namespace TriviaMurderPartyModder.Properties {
                 return ResourceManager.GetString("missingAudio", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to There are multiple {0} IDs..
         /// </summary>
@@ -95,7 +95,7 @@ namespace TriviaMurderPartyModder.Properties {
                 return ResourceManager.GetString("multipleIDs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select something to which you want to import the audio..
         /// </summary>
@@ -104,7 +104,7 @@ namespace TriviaMurderPartyModder.Properties {
                 return ResourceManager.GetString("noAudioImportSelection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select something to remove..
         /// </summary>
@@ -113,7 +113,7 @@ namespace TriviaMurderPartyModder.Properties {
                 return ResourceManager.GetString("noRemovable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A saved file has to exist before importing audio. Export your work or import an existing file..
         /// </summary>
@@ -122,7 +122,7 @@ namespace TriviaMurderPartyModder.Properties {
                 return ResourceManager.GetString("noSavedFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A saved file has to exist before a release check. Export your work or import an existing file..
         /// </summary>
@@ -131,7 +131,7 @@ namespace TriviaMurderPartyModder.Properties {
                 return ResourceManager.GetString("noSavedFileRC", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ogg Vorbis Audio (*.ogg)|*.ogg.
         /// </summary>
@@ -140,7 +140,7 @@ namespace TriviaMurderPartyModder.Properties {
                 return ResourceManager.GetString("oggFilter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select the installation folder of The Jackbox Party Pack 3!.
         /// </summary>

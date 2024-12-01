@@ -5,13 +5,10 @@
             get => category;
             set {
                 category = value;
-                if (jet != null)
-                    jet.SetValue("QuestionText", value);
+                jet?.SetValue("QuestionText", value);
             }
         }
         string category;
-
-        DataJet jet;
 
         public WorstDrawing() => category = string.Empty;
 

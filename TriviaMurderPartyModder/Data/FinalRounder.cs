@@ -6,6 +6,7 @@ namespace TriviaMurderPartyModder.Data {
             get => id;
             set {
                 id = value;
+                jet = null; // Will be loaded from a different folder
                 Header = ToString();
             }
         }
