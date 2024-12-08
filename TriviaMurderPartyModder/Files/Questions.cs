@@ -10,6 +10,9 @@ namespace TriviaMurderPartyModder.Files {
 
         public Questions() : base("questions") { }
 
+        /// <summary>
+        /// Shuffle the choices to make them equally likely to be the correct answer.
+        /// </summary>
         public void Equalize() {
             bool wasChange = false;
             for (int i = 0, c = Count; i < c; i++) {
@@ -24,11 +27,7 @@ namespace TriviaMurderPartyModder.Files {
 
             // OnCollectionChanged
             if (wasChange) {
-                Question[] changeds = this.ToArray();
-                Clear();
-                for (int i = 0; i < changeds.Length; i++) {
-                    Add(changeds[i]);
-                }
+                Replace([.. this]);
             }
         }
 
@@ -42,8 +41,8 @@ namespace TriviaMurderPartyModder.Files {
                 if (id == 3 || text == 5 || choices == 8)
                     continue;
                 id = contents.IndexOf(':', id) + 1;
-                Question imported = new Question {
-                    ID = int.Parse(contents.Substring(id, contents.IndexOf(',', id) - id).Trim()),
+                Question imported = new() {
+                    ID = int.Parse(contents[id..contents.IndexOf(',', id)].Trim()),
                     Text = Parsing.GetTextEntry(ref contents, contents.IndexOf(':', text) + 1)
                 };
                 choices = contents.IndexOf('[', choices) + 1;
@@ -60,13 +59,13 @@ namespace TriviaMurderPartyModder.Files {
         }
 
         protected override bool SaveAs(string name) {
-            Question[] ordered = this.OrderBy(x => x.ID).ToArray();
+            Question[] ordered = [.. this.OrderBy(x => x.ID)];
             Clear();
             for (int i = 0; i < ordered.Length; i++) {
                 Add(ordered[i]);
             }
 
-            StringBuilder output = new StringBuilder("{\"episodeid\":1244,\"content\":[");
+            StringBuilder output = new("{\"episodeid\":1244,\"content\":[");
             for (int i = 0, end = Count; i < end; i++) {
                 Question q = this[i];
                 output.Append("{\"x\":false,\"id\":").Append(q.ID);
@@ -83,14 +82,14 @@ namespace TriviaMurderPartyModder.Files {
                     if (answer != 1)
                         output.Append("},{");
                     else
-                        output.Append("{");
+                        output.Append('{');
                     if (answer == q.Correct)
                         output.Append("\"correct\":true,");
                     if (string.IsNullOrWhiteSpace(q[answer])) {
                         Issue(string.Format("No answer {0} for question \"{1}\".", answer, q.Text));
                         return false;
                     }
-                    output.Append("\"text\":\"").Append(Parsing.MakeTextCompatible(q[answer])).Append("\"");
+                    output.Append("\"text\":\"").Append(Parsing.MakeTextCompatible(q[answer])).Append('"');
                 }
                 if (i != end - 1)
                     output.Append("}]},");
@@ -99,6 +98,16 @@ namespace TriviaMurderPartyModder.Files {
             }
             File.WriteAllText(name, output.ToString());
             return true;
+        }
+
+        /// <summary>
+        /// Replace the contents of this <see cref="Question"/> database with new <paramref name="questions"/>.
+        /// </summary>
+        void Replace(Question[] questions) {
+            Clear();
+            for (int i = 0; i < questions.Length; i++) {
+                Add(questions[i]);
+            }
         }
     }
 }

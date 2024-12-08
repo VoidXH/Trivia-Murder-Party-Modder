@@ -21,7 +21,7 @@ namespace TriviaMurderPartyModder.Files {
                 if (id == 3 || text == 5 || choices == 8)
                     continue;
                 id = contents.IndexOf(':', id) + 1;
-                FinalRounder imported = new FinalRounder(int.Parse(contents.Substring(id, contents.IndexOf(',', id) - id).Trim()),
+                FinalRounder imported = new(int.Parse(contents[id..contents.IndexOf(',', id)].Trim()),
                     Parsing.GetTextEntry(ref contents, contents.IndexOf(':', text) + 1));
                 choices = contents.IndexOf('[', choices);
                 position = Parsing.FindArrayEnd(ref contents, choices);
@@ -44,13 +44,13 @@ namespace TriviaMurderPartyModder.Files {
             MessageBox.Show(text, "Final round issue", MessageBoxButton.OK, MessageBoxImage.Error);
 
         protected override bool SaveAs(string name) {
-            FinalRounder[] ordered = this.OrderBy(x => x.ID).ToArray();
+            FinalRounder[] ordered = [.. this.OrderBy(x => x.ID)];
             Clear();
             for (int i = 0; i < ordered.Length; i++) {
                 Add(ordered[i]);
             }
 
-            StringBuilder output = new StringBuilder("{\"episodeid\":1253,\"content\":[");
+            StringBuilder output = new("{\"episodeid\":1253,\"content\":[");
             for (int i = 0, end = Count; i < end; ++i) {
                 FinalRounder q = this[i];
                 output.Append("{\"x\":false,\"id\":").Append(q.ID);
@@ -64,7 +64,7 @@ namespace TriviaMurderPartyModder.Files {
                     if (choice != 0)
                         output.Append("},{");
                     else
-                        output.Append("{");
+                        output.Append('{');
                     if (item.Correct)
                         output.Append("\"correct\":true,");
                     else
@@ -73,7 +73,7 @@ namespace TriviaMurderPartyModder.Files {
                         FinalRoundIssue(string.Format("Choice without text found for topic \"{0}\".", q.Text));
                         return false;
                     }
-                    output.Append("\"text\":\"").Append(Parsing.MakeTextCompatible(item.Text)).Append("\"");
+                    output.Append("\"text\":\"").Append(Parsing.MakeTextCompatible(item.Text)).Append('"');
                 }
                 if (i != end - 1)
                     output.Append("}]},");

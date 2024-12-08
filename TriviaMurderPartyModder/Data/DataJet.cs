@@ -88,12 +88,16 @@ namespace TriviaMurderPartyModder.Data {
 
             if (sourceFile != null) {
                 set["v"] = type.ToString();
+                Directory.CreateDirectory(Folder);
                 File.Copy(sourceFile, Path.Combine(Folder, type + ".ogg"), true);
             } else if (oldFile != null) {
                 set.AsObject().Remove("v");
             }
 
-            GetByName(parsed, "Has" + type)["v"] = sourceFile != null ? "true" : "false";
+            JsonNode enableNode = GetByName(parsed, "Has" + type);
+            if (enableNode != null) { // Questions always have question audio, this is redundant for them, thus, not set
+                enableNode["v"] = sourceFile != null ? "true" : "false";
+            }
             Contents = parsed.ToJsonString();
         }
 
